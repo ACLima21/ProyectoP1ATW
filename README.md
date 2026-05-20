@@ -88,3 +88,28 @@ npm run build
 ---
 
 ## 🗂️ Estructura del Proyecto
+voyageai/
+├── public/
+├── src/
+│   ├── assets/              # Imágenes del proyecto
+│   ├── components/
+│   │   ├── Navbar.jsx       # Navegación fija con ScrollSpy y menú móvil
+│   │   ├── Hero.jsx         # Sección principal con modal de video
+│   │   ├── Features.jsx     # Grid de características con Scroll Reveal
+│   │   ├── Carousel.jsx     # Carrusel responsive de destinos
+│   │   ├── Stats.jsx        # Contadores animados
+│   │   ├── Pricing.jsx      # Planes de precio con toggle mensual/anual
+│   │   ├── Modal.jsx        # Modal con React Portal
+│   │   ├── Contact.jsx      # Formulario controlado con validación
+│   │   ├── Tooltip.jsx      # Componente tooltip reutilizable
+│   │   └── Footer.jsx       # Pie de página
+│   ├── hooks/
+│   │   ├── useScrollReveal.js  # Animación de entrada al viewport
+│   │   ├── useScrollSpy.js     # Detección de sección activa
+│   │   └── useCounter.js       # Animación de contadores numéricos
+│   ├── App.jsx              # Componente raíz
+│   ├── index.css            # Estilos globales (Mobile First)
+│   └── main.jsx             # Punto de entrada
+├── index.html
+├── vite.config.js
+└── package.json
