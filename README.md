@@ -1,8 +1,5 @@
 # ✈️ VoyageAI — Plataforma de Planificación de Viajes con IA
 
-![VoyageAI Banner](./screenshots/banner.png)
-<!-- Opcional: puedes subir una captura del hero y referenciarla aquí -->
-
 ## 📌 Descripción de la Idea
 
 VoyageAI es una plataforma web de planificación de viajes impulsada por inteligencia artificial. 
@@ -88,28 +85,30 @@ npm run build
 ---
 
 ## 🗂️ Estructura del Proyecto
+```
 voyageai/
 ├── public/
 ├── src/
-│   ├── assets/              # Imágenes del proyecto
+│   ├── assets/
 │   ├── components/
-│   │   ├── Navbar.jsx       # Navegación fija con ScrollSpy y menú móvil
-│   │   ├── Hero.jsx         # Sección principal con modal de video
-│   │   ├── Features.jsx     # Grid de características con Scroll Reveal
-│   │   ├── Carousel.jsx     # Carrusel responsive de destinos
-│   │   ├── Stats.jsx        # Contadores animados
-│   │   ├── Pricing.jsx      # Planes de precio con toggle mensual/anual
-│   │   ├── Modal.jsx        # Modal con React Portal
-│   │   ├── Contact.jsx      # Formulario controlado con validación
-│   │   ├── Tooltip.jsx      # Componente tooltip reutilizable
-│   │   └── Footer.jsx       # Pie de página
+│   │   ├── Navbar.jsx
+│   │   ├── Hero.jsx
+│   │   ├── Features.jsx
+│   │   ├── Carousel.jsx
+│   │   ├── Stats.jsx
+│   │   ├── Pricing.jsx
+│   │   ├── Modal.jsx
+│   │   ├── Contact.jsx
+│   │   ├── Tooltip.jsx
+│   │   └── Footer.jsx
 │   ├── hooks/
-│   │   ├── useScrollReveal.js  # Animación de entrada al viewport
-│   │   ├── useScrollSpy.js     # Detección de sección activa
-│   │   └── useCounter.js       # Animación de contadores numéricos
-│   ├── App.jsx              # Componente raíz
-│   ├── index.css            # Estilos globales (Mobile First)
-│   └── main.jsx             # Punto de entrada
+│   │   ├── useScrollReveal.js
+│   │   ├── useScrollSpy.js
+│   │   └── useCounter.js
+│   ├── App.jsx
+│   ├── index.css
+│   └── main.jsx
 ├── index.html
 ├── vite.config.js
 └── package.json
+```
