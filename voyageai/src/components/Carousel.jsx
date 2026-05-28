@@ -1,19 +1,40 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
+// ── Imágenes locales ──────────────────────────────────────────
 import imgTokyo from '../assets/tokyo.jpg'
 import imgCusco from '../assets/cusco.jpg'
 import imgRoma  from '../assets/roma.jpg'
 import imgBali  from '../assets/bali.jpg'
 import imgDubai from '../assets/dubai.jpg'
+// ── Data desde JSON ───────────────────────────────────────────
+import destinosData from '../data/destinos.json'
 
-const DESTINOS = [
-  { img: imgTokyo, name: 'Tokio, Japón',     place: 'Asia Oriental',  price: '$1,200', tags: ['Cultural', 'Gastronomía'], desc: 'Templos milenarios, tecnología futurista y la mejor gastronomía del mundo.' },
-  { img: imgCusco, name: 'Cusco, Perú',     place: 'Sudamérica',     price: '$680',   tags: ['Aventura', 'Historia'],    desc: 'Machu Picchu, el Valle Sagrado y la magia de los Andes en un solo viaje.' },
-  { img: imgRoma,  name: 'Roma, Italia',    place: 'Europa Meridional', price: '$950', tags: ['Historia', 'Arte'],       desc: 'El Coliseo, la Fontana di Trevi y la pasta más auténtica de tu vida.' },
-  { img: imgBali,  name: 'Bali, Indonesia', place: 'Asia Pacífico',  price: '$780',   tags: ['Relax', 'Naturaleza'],    desc: 'Arrozales infinitos, templos sagrados y playas de arena volcánica negra.' },
-  { img: imgDubai, name: 'Dubái, EAU',       place: 'Oriente Medio',  price: '$1,400', tags: ['Lujo', 'Moderno'],        desc: 'Rascacielos imposibles, desiertos dorados y lujo sin límites.' },
-]
+/*
+ * Mapa de claves → imágenes locales.
+ * 
+ * Explicación del mapa de claves:
+ * JSON solo guarda texto. Las imágenes en React se importan como módulos.
+ * Este mapa conecta la clave de texto del JSON con el módulo de imagen.
+ *
+ * Cuando se migre a una API real, el backend devolverá URLs directas
+ * ("imgUrl": "https://cdn.voyageai.com/tokyo.jpg"), y se eliminará
+ * este mapa y usar d.imgUrl directamente. El resto del componente
+ * no necesita ningún cambio.
+ */
+const IMAGE_MAP = {
+  tokyo: imgTokyo,
+  cusco: imgCusco,
+  roma:  imgRoma,
+  bali:  imgBali,
+  dubai: imgDubai,
+}
+
+// Enriquecer el JSON resolviendo la imagen correspondiente
+const DESTINOS = destinosData.map(d => ({
+  ...d,
+  img: IMAGE_MAP[d.imgKey],
+}))
 
 // Cuántas slides se muestran según el viewport
 export default function Carousel() {

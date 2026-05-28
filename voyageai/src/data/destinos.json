@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "imgKey": "tokyo",
+    "name": "Tokio, Japón",
+    "place": "Asia Oriental",
+    "price": "$1,200",
+    "tags": ["Cultural", "Gastronomía"],
+    "desc": "Templos milenarios, tecnología futurista y la mejor gastronomía del mundo."
+  },
+  {
+    "id": 2,
+    "imgKey": "cusco",
+    "name": "Cusco, Perú",
+    "place": "Sudamérica",
+    "price": "$680",
+    "tags": ["Aventura", "Historia"],
+    "desc": "Machu Picchu, el Valle Sagrado y la magia de los Andes en un solo viaje."
+  },
+  {
+    "id": 3,
+    "imgKey": "roma",
+    "name": "Roma, Italia",
+    "place": "Europa Meridional",
+    "price": "$950",
+    "tags": ["Historia", "Arte"],
+    "desc": "El Coliseo, la Fontana di Trevi y la pasta más auténtica de tu vida."
+  },
+  {
+    "id": 4,
+    "imgKey": "bali",
+    "name": "Bali, Indonesia",
+    "place": "Asia Pacífico",
+    "price": "$780",
+    "tags": ["Relax", "Naturaleza"],
+    "desc": "Arrozales infinitos, templos sagrados y playas de arena volcánica negra."
+  },
+  {
+    "id": 5,
+    "imgKey": "dubai",
+    "name": "Dubái, EAU",
+    "place": "Oriente Medio",
+    "price": "$1,400",
+    "tags": ["Lujo", "Moderno"],
+    "desc": "Rascacielos imposibles, desiertos dorados y lujo sin límites."
+  }
+]
