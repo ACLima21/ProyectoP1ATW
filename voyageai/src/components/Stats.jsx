@@ -1,16 +1,8 @@
 import { useCounter } from '../hooks/useCounter'
+import statsData from '../data/stats.json'
 
-const DATA = [
-  { target: 200000, suffix: 'K+', label: 'Viajeros activos',   prefix: '' },
-  { target: 150,    suffix: '+',  label: 'Destinos cubiertos', prefix: '' },
-  { target: 98,     suffix: '%',  label: 'Satisfacción',       prefix: '' },
-  { target: 4,      suffix: 'M+', label: 'Itinerarios creados', prefix: '' },
-]
-
-function StatItem({ target, suffix, label, prefix }) {
-  // Ajusta el número para la visualización (200000 → 200)
-  const displayTarget = suffix === 'K+' ? Math.floor(target / 1000) : target
-  const { count, ref } = useCounter(displayTarget, 2200)
+function StatItem({ counterTarget, suffix, label, prefix }) {
+  const { count, ref } = useCounter(counterTarget, 2200)
 
   return (
     <div ref={ref} className="stat-item">
@@ -27,7 +19,7 @@ export default function Stats() {
     <section className="section stats">
       <div className="container">
         <div className="stats-grid">
-          {DATA.map((d) => <StatItem key={d.label} {...d} />)}
+          {statsData.map((s) => <StatItem key={s.label} {...s} />)}
         </div>
       </div>
     </section>

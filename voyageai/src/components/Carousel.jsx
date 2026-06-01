@@ -36,17 +36,17 @@ const DESTINOS = destinosData.map(d => ({
   img: IMAGE_MAP[d.imgKey],
 }))
 
-// Cuántas slides se muestran según el viewport
-export default function Carousel() {
-  const [current, setCurrent] = useState(0)
-
-  const getSlidesVisible = () => {
+const getSlidesVisible = () => {
     if (window.innerWidth >= 1024) return 3
     if (window.innerWidth >= 768)  return 2
     return 1
   }
 
+// Cuántas slides se muestran según el viewport
+export default function Carousel() {
+  const [current, setCurrent] = useState(0)
   const [slidesVisible, setSlidesVisible] = useState(getSlidesVisible)
+  const headerRef = useScrollReveal()
 
   // Escucha cambios de tamaño de ventana
   useEffect(() => {
@@ -60,7 +60,6 @@ export default function Carousel() {
   }, [])
 
   const maxIndex = DESTINOS.length - slidesVisible
-  const headerRef = useScrollReveal()
 
   const prev = useCallback(() => setCurrent(c => Math.max(c - 1, 0)), [])
   const next = useCallback(() => setCurrent(c => Math.min(c + 1, maxIndex)), [maxIndex])
@@ -68,6 +67,7 @@ export default function Carousel() {
   return (
     <section className="section">
       <div className="container">
+      
         {/* Header + controles */}
         <div ref={headerRef} className="reveal carousel-header">
           <div>

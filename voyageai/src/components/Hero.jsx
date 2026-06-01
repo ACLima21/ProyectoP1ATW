@@ -3,6 +3,7 @@ import { FiArrowRight, FiPlay } from 'react-icons/fi'
 import { useState } from 'react'
 import japanImg from '../assets/japan.jpg'
 import demoVideo from '../assets/demo.mp4'
+import statsData from '../data/stats.json'
 
 export default function Hero() {
   const refLeft  = useScrollReveal()
@@ -43,12 +44,8 @@ export default function Hero() {
           </div>
 
           <div className="hero-stats">
-            {[
-              { val: '200K+', label: 'Viajeros activos' },
-              { val: '98%',   label: 'Satisfacción' },
-              { val: '150+',  label: 'Destinos' },
-            ].map(({ val, label }) => (
-              <div key={label} className="hero-stat">
+            {statsData.filter(s => s.hero).map(({ id, val, label }) => (
+              <div key={id} className="hero-stat">
                 <strong>{val}</strong>
                 <span>{label}</span>
               </div>

@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "iconKey": "cpu",
+    "color": "#5B4FE8",
+    "bg": "rgba(91,79,232,0.15)",
+    "title": "IA Personalizada",
+    "desc": "Algoritmos que aprenden tus gustos y preferencias para crear itinerarios únicos cada vez."
+  },
+  {
+    "id": 2,
+    "iconKey": "map",
+    "color": "#F59E0B",
+    "bg": "rgba(245,158,11,0.15)",
+    "title": "Mapas Interactivos",
+    "desc": "Visualiza tu ruta en mapas detallados con puntos de interés, restaurantes y actividades."
+  },
+  {
+    "id": 3,
+    "iconKey": "dollarSign",
+    "color": "#10B981",
+    "bg": "rgba(16,185,129,0.15)",
+    "title": "Control de Presupuesto",
+    "desc": "Optimiza cada gasto. Compara precios en tiempo real y encuentra las mejores ofertas."
+  },
+  {
+    "id": 4,
+    "iconKey": "globe",
+    "color": "#EC4899",
+    "bg": "rgba(236,72,153,0.15)",
+    "title": "Multi-idioma",
+    "desc": "Traducciones instantáneas, guías culturales y frases útiles para cada destino."
+  },
+  {
+    "id": 5,
+    "iconKey": "calendar",
+    "color": "#06B6D4",
+    "bg": "rgba(6,182,212,0.15)",
+    "title": "Calendario Inteligente",
+    "desc": "Sincroniza tu itinerario con Google Calendar y recibe recordatorios automáticos."
+  },
+  {
+    "id": 6,
+    "iconKey": "shield",
+    "color": "#8B5CF6",
+    "bg": "rgba(139,92,246,0.15)",
+    "title": "Viaje Seguro",
+    "desc": "Alertas de seguridad, seguros de viaje recomendados y contactos de emergencia."
+  }
+]

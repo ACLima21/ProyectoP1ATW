@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "val": "200K+",
+    "label": "Viajeros activos",
+    "counterTarget": 200,
+    "suffix": "K+",
+    "prefix": "",
+    "hero": true
+  },
+  {
+    "id": 2,
+    "val": "150+",
+    "label": "Destinos cubiertos",
+    "counterTarget": 150,
+    "suffix": "+",
+    "prefix": "",
+    "hero": true
+  },
+  {
+    "id": 3,
+    "val": "98%",
+    "label": "Satisfacción",
+    "counterTarget": 98,
+    "suffix": "%",
+    "prefix": "",
+    "hero": true
+  },
+  {
+    "id": 4,
+    "val": "4M+",
+    "label": "Itinerarios creados",
+    "counterTarget": 4,
+    "suffix": "M+",
+    "prefix": "",
+    "hero": false
+  }
+]

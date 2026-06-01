@@ -10,6 +10,7 @@
   --primary: #5B4FE8;
   --primary-dark: #4338CA;
   --primary-light: #818CF8;
+  --primary-light-carousel: var(--white);
   --accent: #F59E0B;
   --accent2: #10B981;
   --danger: #EF4444;
@@ -20,6 +21,7 @@
   --white: #FFFFFF;
   --text: #CBD5E1;
   --text-muted: #64748B;
+  --text-overlay: #b8b4d8;
   --font-display: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
   --radius: 16px;
@@ -621,7 +623,7 @@ ul { list-style: none; }
   padding: 0.25rem 0.75rem;
   border-radius: 50px;
   background: rgba(91,79,232,0.4);
-  color: var(--primary-light);
+  color: var(--primary-light-carousel);
   border: 1px solid rgba(91,79,232,0.4);
 }
 
@@ -633,7 +635,7 @@ ul { list-style: none; }
   margin-bottom: 0.35rem;
 }
 
-.dest-card-content p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+.dest-card-content p { color: var(--text-overlay); font-size: 0.9rem; margin-bottom: 1rem; }
 
 .dest-card-footer { display: flex; align-items: center; justify-content: space-between; }
 .dest-price { color: var(--accent); font-weight: 700; font-size: 1.1rem; }
@@ -666,8 +668,6 @@ ul { list-style: none; }
   gap: 2rem;
   text-align: center;
 }
-
-.stat-item {}
 
 .stat-number {
   font-family: var(--font-display);
