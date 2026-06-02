@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi'
 import Modal from './Modal'
+import { useFlow } from '../context/FlowContext'
 
 const INITIAL = { nombre: '', apellido: '', email: '', interes: '', mensaje: '', acepto: false }
 
@@ -10,6 +11,7 @@ export default function Contact() {
   const [errors,     setErrors]     = useState({})
   const [loading,    setLoading]    = useState(false)
   const [showModal,  setShowModal]  = useState(false)
+  const { setFormSubmitted } = useFlow()
   const infoRef = useScrollReveal()
   const formRef = useScrollReveal()
 
@@ -40,6 +42,7 @@ export default function Contact() {
     await new Promise(r => setTimeout(r, 1500))
     setLoading(false)
     setForm(INITIAL)
+    setFormSubmitted(true)   // ← nueva línea: activa el guard
     setShowModal(true)
   }
 

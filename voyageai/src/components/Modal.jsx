@@ -1,8 +1,12 @@
 import { createPortal } from 'react-dom'
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { FiArrowRight } from 'react-icons/fi'
 
 // Modal usando React Portal — se renderiza fuera del árbol DOM principal
 export default function Modal({ onClose }) {
+  const navigate = useNavigate()
+
   // Bloquear scroll cuando el modal está abierto
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -16,6 +20,11 @@ export default function Modal({ onClose }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
+  const handleNavegar = () => {
+    onClose()
+    navigate('/confirmacion')   // ← navega a la ruta protegida
+  }
+
   return createPortal(
     <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
       <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -23,11 +32,15 @@ export default function Modal({ onClose }) {
         <div className="modal-icon">✅</div>
         <h3>¡Mensaje enviado!</h3>
         <p>
-          Gracias por contactarnos. Nuestro equipo revisará tu mensaje
-          y te responderá en menos de 24 horas.
+          Hemos recibido tu consulta. Haz clic para ver
+          la confirmación completa de tu solicitud.
         </p>
-        <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={onClose}>
-          Perfecto, cerrar
+        <button
+          className="btn btn-primary"
+          style={{ width: '100%', justifyContent: 'center' }}
+          onClick={handleNavegar}
+        >
+          Ver mi confirmación <FiArrowRight />
         </button>
       </div>
     </div>,
