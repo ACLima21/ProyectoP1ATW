@@ -1,0 +1,50 @@
+{
+  "annualDiscount": 35,
+  "plans": [
+    {
+      "id": 1,
+      "name": "Explorador",
+      "monthlyPrice": 0,
+      "desc": "Perfecto para empezar a explorar el mundo.",
+      "featured": false,
+      "cta": "Gratis para siempre",
+      "features": [
+        { "text": "3 itinerarios / mes",  "ok": true  },
+        { "text": "Destinos básicos",      "ok": true  },
+        { "text": "Mapas interactivos",    "ok": true  },
+        { "text": "IA avanzada",           "ok": false },
+        { "text": "Soporte prioritario",   "ok": false }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Viajero",
+      "monthlyPrice": 12,
+      "desc": "Para viajeros frecuentes que quieren más.",
+      "featured": true,
+      "cta": "Empezar ahora",
+      "features": [
+        { "text": "Itinerarios ilimitados", "ok": true  },
+        { "text": "Todos los destinos",     "ok": true  },
+        { "text": "Mapas interactivos",     "ok": true  },
+        { "text": "IA avanzada",            "ok": true  },
+        { "text": "Soporte prioritario",    "ok": false }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Nómada Pro",
+      "monthlyPrice": 29,
+      "desc": "Máximo poder para los grandes exploradores.",
+      "featured": false,
+      "cta": "Contactar ventas",
+      "features": [
+        { "text": "Todo en Viajero",      "ok": true },
+        { "text": "API access",           "ok": true },
+        { "text": "Informes de viaje",    "ok": true },
+        { "text": "IA avanzada",          "ok": true },
+        { "text": "Soporte 24/7",         "ok": true }
+      ]
+    }
+  ]
+}
