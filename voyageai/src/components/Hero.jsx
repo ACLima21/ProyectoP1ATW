@@ -1,5 +1,6 @@
 import { useScrollReveal } from '../hooks/useScrollReveal'
-import { FiArrowRight, FiPlay } from 'react-icons/fi'
+import { FiArrowRight, FiPlay, FiStar } from 'react-icons/fi'
+import { PiAirplaneTiltFill } from "react-icons/pi";
 import { useState } from 'react'
 import japanImg from '../assets/japan.jpg'
 import demoVideo from '../assets/demo.mp4'
@@ -18,10 +19,6 @@ export default function Hero() {
       <div className="container">
         {/* Lado izquierdo */}
         <div ref={refLeft} className="reveal">
-          <div className="hero-badge">
-            ✦ IA para viajeros modernos
-          </div>
-
           <h1 className="hero-title">
             Planifica tu<br />
             <span className="text-gradient">aventura perfecta</span><br />
@@ -73,7 +70,7 @@ export default function Hero() {
 
           {/* Tarjetas flotantes */}
           <div className="hero-floating hero-floating-1">
-            <div className="icon" style={{ background: 'rgba(245,158,11,0.15)', color: '#F59E0B' }}>⭐</div>
+            <div className="icon" style={{ background: 'rgba(245,158,11,0.15)', color: '#F59E0B' }}><FiStar /></div>
             <div>
               <strong>4.9 / 5.0</strong>
               <span>Valoración media</span>
@@ -81,7 +78,7 @@ export default function Hero() {
           </div>
 
           <div className="hero-floating hero-floating-2">
-            <div className="icon" style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981' }}>✈️</div>
+            <div className="icon" style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981' }}><PiAirplaneTiltFill /></div>
             <div>
               <strong>Vuelo encontrado</strong>
               <span>Desde $620 USD</span>
