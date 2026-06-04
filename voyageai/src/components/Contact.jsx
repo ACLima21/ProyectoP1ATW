@@ -129,7 +129,7 @@ export default function Contact() {
 
             <div className="form-submit-row">
               <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? '⏳ Enviando...' : '✉️ Enviar mensaje'}
+                {loading ? 'Enviando...' : 'Enviar mensaje'}
               </button>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                 Respuesta en &lt; 24 horas

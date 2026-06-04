@@ -5,23 +5,30 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-/* ── Variables ── */
+/* =============================================
+   TEMA OSCURO (por defecto)
+   ============================================= */
 :root {
   --primary: #5B4FE8;
   --primary-dark: #4338CA;
   --primary-light: #818CF8;
   --primary-light-carousel: var(--white);
+  --primary-light-carousel-forever: var(--white-forever);
   --accent: #F59E0B;
   --accent2: #10B981;
   --danger: #EF4444;
+
+  /* Superficies */
   --dark: #0D0D1A;
   --dark-card: #161629;
   --dark-border: #252540;
   --light: #F5F4FF;
   --white: #FFFFFF;
+  --white-forever: #FFFFFF;
   --text: #CBD5E1;
   --text-muted: #64748B;
   --text-overlay: #b8b4d8;
+
   --font-display: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
   --radius: 16px;
@@ -30,8 +37,27 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* =============================================
+   TEMA CLARO — se sobreescriben solo las superficies
+   ============================================= */
+[data-theme="light"] {
+  --dark:        #F0F2FF;
+  --dark-card:   #FFFFFF;
+  --dark-border: #DDE1F5;
+  --white:       #0D0D1A;
+  --text:        #334155;
+  --shadow:      0 20px 60px rgba(91,79,232,0.12);
+}
+
 /* ── Reset ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { 
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.35s ease,
+              border-color 0.35s ease,
+              box-shadow 0.35s ease;
+  }
 
 html {
   scroll-behavior: smooth;
@@ -44,6 +70,7 @@ body {
   color: var(--text);
   line-height: 1.6;
   overflow-x: hidden;
+  transition: var(--theme-transition);
 }
 
 img { max-width: 100%; display: block; }
@@ -99,6 +126,14 @@ ul { list-style: none; }
   background-clip: text;
 }
 
+/* Ajustes específicos del tema claro */
+[data-theme="light"] .text-gradient {
+  background: linear-gradient(135deg, var(--primary), #4338CA);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .text-center { text-align: center; }
 .mx-auto { margin-left: auto; margin-right: auto; }
 
@@ -116,7 +151,7 @@ ul { list-style: none; }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: var(--white);
+  color: var(--white-forever);
   box-shadow: 0 8px 30px rgba(91,79,232,0.4);
 }
 
@@ -191,6 +226,11 @@ ul { list-style: none; }
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--dark-border);
   padding: 0.85rem 0;
+}
+
+/* Ajustes específicos del tema claro */
+[data-theme="light"] .navbar.scrolled {
+  background: rgba(240,242,255,0.92);
 }
 
 .navbar .container {
@@ -285,6 +325,11 @@ ul { list-style: none; }
   z-index: 999;
 }
 
+/* Ajustes específicos del tema claro */
+[data-theme="light"] .mobile-menu {
+  background: #FFFFFF;
+}
+
 .mobile-menu.open { transform: translateY(0); }
 
 .mobile-link {
@@ -323,6 +368,13 @@ ul { list-style: none; }
   pointer-events: none;
 }
 
+/* Ajustes específicos del tema claro */
+[data-theme="light"] .hero-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(91,79,232,0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 50%, rgba(245,158,11,0.05) 0%, transparent 60%);
+}
+
 .hero-grid-bg {
   position: absolute;
   inset: 0;
@@ -331,6 +383,13 @@ ul { list-style: none; }
     linear-gradient(90deg, rgba(91,79,232,0.05) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
+}
+
+/* Ajustes específicos del tema claro */
+[data-theme="light"] .hero-grid-bg {
+  background-image:
+    linear-gradient(rgba(91,79,232,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91,79,232,0.04) 1px, transparent 1px);
 }
 
 .hero .container {
@@ -623,7 +682,7 @@ ul { list-style: none; }
   padding: 0.25rem 0.75rem;
   border-radius: 50px;
   background: rgba(91,79,232,0.4);
-  color: var(--primary-light-carousel);
+  color: var(--primary-light-carousel-forever);
   border: 1px solid rgba(91,79,232,0.4);
 }
 
@@ -631,7 +690,7 @@ ul { list-style: none; }
   font-family: var(--font-display);
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--white-forever);
   margin-bottom: 0.35rem;
 }
 
@@ -874,6 +933,11 @@ ul { list-style: none; }
   font-family: var(--font-body);
   font-size: 0.95rem;
   transition: var(--transition);
+}
+
+/* Ajustes específicos del tema claro */
+[data-theme="light"] .form-control {
+  background: #F8F9FF;
 }
 
 .form-control::placeholder { color: var(--text-muted); }
@@ -1232,4 +1296,29 @@ select.form-control option { background: var(--dark-card); }
 .confirmacion-step span {
   color: var(--text-muted);
   font-size: 0.82rem;
+}
+
+/* =========================================
+   THEME TOGGLE
+   ========================================= */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--dark-card);
+  border: 1.5px solid var(--dark-border);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--primary-light);
+  border-color: var(--primary-light);
+  background: rgba(91,79,232,0.1);
+  transform: rotate(15deg);
 }

@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiArrowRight } from 'react-icons/fi'
+import { FiArrowRight, FiSmile } from 'react-icons/fi'
 
 // Modal usando React Portal — se renderiza fuera del árbol DOM principal
 export default function Modal({ onClose }) {
@@ -29,7 +29,7 @@ export default function Modal({ onClose }) {
     <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
-        <div className="modal-icon">✅</div>
+        <div className="modal-icon"><FiSmile style={{ color: '#10B981' }} /></div>
         <h3>¡Mensaje enviado!</h3>
         <p>
           Hemos recibido tu consulta. Haz clic para ver

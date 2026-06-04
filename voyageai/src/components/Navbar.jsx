@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useScrollSpy } from '../hooks/useScrollSpy'
 import { FiCompass } from 'react-icons/fi'
+import ThemeToggle from './ThemeToggle'
 
 const SECTIONS = ['inicio', 'features', 'destinos', 'precios', 'contacto']
 const LABELS   = { inicio: 'Inicio', features: 'Características', destinos: 'Destinos', precios: 'Precios', contacto: 'Contacto' }
@@ -56,6 +57,15 @@ export default function Navbar() {
             Empezar gratis
           </button>
 
+          {/* Toggle + Hamburger mobile */}
+          <ThemeToggle />
+          <button
+            className={`hamburger ${menuOpen ? 'open' : ''}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Menú"
+          >
+            <span /><span /><span />
+          </button>
           {/* Hamburger mobile */}
           <button className={`hamburger ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Menú">
             <span /><span /><span />
