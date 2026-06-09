@@ -1,26 +1,28 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { FlowProvider } from './context/FlowContext'
+import { AuthProvider }  from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { FlowProvider }  from './context/FlowContext'
 import './index.css'
 import App from './App.jsx'
 
 /*
- * BrowserRouter va aquí (en el nivel más alto) para que
- * toda la app tenga acceso a la navegación.
- * 
- * FlowProvider también va aquí para que el estado del flujo
- * esté disponible en todas las rutas, incluyendo Confirmacion.
+ * Orden de los providers (de afuera hacia adentro):
+ * BrowserRouter → habilita navegación en toda la app
+ * ThemeProvider → tema claro/oscuro (más global de todo)
+ * AuthProvider  → sesión del usuario
+ * FlowProvider  → estado del formulario de contacto
  */
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <ThemeProvider> 
-        <FlowProvider>
-          <App />
-        </FlowProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <FlowProvider>
+            <App />
+          </FlowProvider>
+        </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   </StrictMode>
