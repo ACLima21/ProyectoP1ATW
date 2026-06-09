@@ -26,19 +26,19 @@ export default function Dashboard() {
 
     const [busqueda, setBusqueda] = useState('')   // ← nuevo
 
-    // Filtra los viajes según el texto escrito
-    const viajesFiltrados = useMemo(() => {
-    const texto = busqueda.toLowerCase().trim()
-    if (!texto) return VIAJES_RECIENTES
-    return VIAJES_RECIENTES.filter(v =>
-        v.destino.toLowerCase().includes(texto) ||
-        v.estado.toLowerCase().includes(texto)
-    )
-    }, [busqueda])
-    const handleLogout = () => {
-        logout()
-        navigate('/')
-    }
+// Filtra los viajes según el texto escrito
+const viajesFiltrados = useMemo(() => {
+const texto = busqueda.toLowerCase().trim()
+if (!texto) return VIAJES_RECIENTES
+return VIAJES_RECIENTES.filter(v =>
+    v.destino.toLowerCase().includes(texto) ||
+    v.estado.toLowerCase().includes(texto)
+)
+}, [busqueda])
+const handleLogout = () => {
+    logout()
+    navigate('/')
+}
 
   return (
     <div className="dash-page">
@@ -66,15 +66,15 @@ export default function Dashboard() {
           </Link>
         </nav>
 
-        {/* Solo visible si es admin */}
-        {isAdmin && (
-          <div className="dash-admin-access">
-            <span className="dash-nav-label">Administración</span>
-            <Link to="/admin" className="dash-nav-item admin">
-              <FiShield /> Panel Admin
-            </Link>
-          </div>
-        )}
+{/* Solo visible si es admin */}
+{isAdmin && (
+<div className="dash-admin-access">
+<span className="dash-nav-label">Administración</span>
+<Link to="/admin" className="dash-nav-item admin">
+    <FiShield /> Panel Admin
+</Link>
+</div>
+)}
 
         <div className="dash-sidebar-footer">
           <div className="dash-user-info">

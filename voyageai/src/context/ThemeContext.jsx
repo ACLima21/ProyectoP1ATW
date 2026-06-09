@@ -22,23 +22,23 @@ function getInitialTheme() {
 }
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(getInitialTheme)
+const [theme, setTheme] = useState(getInitialTheme)
 
-  // Aplica el tema al <html> y lo guarda en localStorage
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('voyageai-theme', theme)
-  }, [theme])
+// Aplica el tema al <html> y lo guarda en localStorage
+useEffect(() => {
+document.documentElement.setAttribute('data-theme', theme)
+localStorage.setItem('voyageai-theme', theme)
+}, [theme])
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark')
-  }
+const toggleTheme = () => {
+setTheme(prev => prev === 'dark' ? 'light' : 'dark')
+}
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  )
+return (
+<ThemeContext.Provider value={{ theme, toggleTheme }}>
+  {children}
+</ThemeContext.Provider>
+)
 }
 
 export function useTheme() {
