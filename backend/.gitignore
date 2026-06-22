@@ -1,33 +1,45 @@
-HELP.md
+# ── Maven ──────────────────────────────────
 target/
-.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# ── Spring Boot ────────────────────────────
+*.jar
+*.war
+*.ear
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# ── Credenciales y configuración sensible ──
+application-prod.properties
+application-local.properties
+.env
+
+# ── IDE — VS Code ──────────────────────────
+.vscode/
+*.code-workspace
+
+# ── IDE — IntelliJ ─────────────────────────
+.idea/
 *.iml
+*.iws
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# ── IDE — Eclipse ──────────────────────────
+.eclipse/
+.classpath
+.project
+.settings/
 
-### VS Code ###
-.vscode/
+# ── Sistema operativo ──────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ───────────────────────────────────
+logs/
+*.log
+*.log.*
+
+# ── Otros ──────────────────────────────────
+*.tmp
+*.swp
