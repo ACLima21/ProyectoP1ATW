@@ -43,14 +43,5 @@
     "price": "$1,400",
     "tags": ["Lujo", "Moderno"],
     "desc": "Rascacielos imposibles, desiertos dorados y lujo sin límites."
-  },
-  {
-    "id": 6,
-    "imgKey": "cusco",
-    "name": "Quevedo, Ecuador",
-    "place": "Oriente Medio",
-    "price": "$5",
-    "tags": ["Lujo", "Moderno"],
-    "desc": "Arriesga tu vida en la tierra del sol."
   }
 ]
