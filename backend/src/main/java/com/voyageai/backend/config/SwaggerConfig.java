@@ -1,0 +1,39 @@
+package com.voyageai.backend.config;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI voyageAIOpenAPI() {
+        return new OpenAPI()
+            // Agrega Basic Auth al botón "Authorize" de Swagger
+            .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
+            .components(new Components()
+                .addSecuritySchemes("basicAuth", new SecurityScheme()
+                    .name("basicAuth")
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme("basic")
+                    .description("Ingresa correo y contraseña para autenticarte")
+                )
+            )
+            .info(new Info()
+                .title("VoyageAI API")
+                .description("API REST para la plataforma de planificación de viajes con IA. " +
+                    "Usa el botón Authorize para iniciar sesión con tu correo y contraseña.")
+                .version("2.0.0")
+                .contact(new Contact()
+                    .name("VoyageAI Team")
+                    .email("hola@voyageai.com")
+                )
+            );
+    }
+}
