@@ -1,116 +1,121 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-import usuariosData from '../data/usuarios.json'
-
-/*
- * AuthContext — autenticación contra usuarios.json
- *
- * En producción este archivo se reemplaza por llamadas reales:
- * login    → POST /api/auth/login
- * register → POST /api/auth/register
- *
- * El resto de la app no cambia — solo el interior de estas funciones.
- */
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { authService } from '../services/authService.js'
 
 const AuthContext = createContext(null)
 
-const simulateApi = (ms = 1200) => new Promise(r => setTimeout(r, ms))
-
-// Campos que SÍ se guardan en localStorage — nunca la password
-const SAFE_FIELDS = ['id', 'nombre', 'correo', 'rol', 'avatar', 'fechaRegistro']
-
-function sanitizeUser(user) {
-  return SAFE_FIELDS.reduce((acc, key) => {
-    acc[key] = user[key]
-    return acc
-  }, {})
-}
-
-function getStoredUser() {
+// Decodifica el payload del JWT sin verificar la firma (la verifica el servidor)
+function decodeJwtPayload(token) {
   try {
-    const stored = localStorage.getItem('voyageai-user')
-    return stored ? JSON.parse(stored) : null
+    return JSON.parse(atob(token.split('.')[1]))
   } catch {
     return null
   }
 }
 
+// Verifica si el token está expirado en el cliente
+function isTokenExpired(token) {
+  const payload = decodeJwtPayload(token)
+  if (!payload?.exp) return true
+  return Date.now() >= payload.exp * 1000
+}
+
+// Lee sesión guardada de localStorage
+function getStoredSession() {
+  try {
+    const token = localStorage.getItem('voyageai-token')
+    const user  = localStorage.getItem('voyageai-user')
+    if (!token || !user) return { token: null, user: null }
+    if (isTokenExpired(token)) {
+      localStorage.removeItem('voyageai-token')
+      localStorage.removeItem('voyageai-user')
+      return { token: null, user: null }
+    }
+    return { token, user: JSON.parse(user) }
+  } catch {
+    return { token: null, user: null }
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user,    setUser]    = useState(getStoredUser)
+  const stored = getStoredSession()
+  const [user,    setUser]    = useState(stored.user)
+  const [token,   setToken]   = useState(stored.token)
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('voyageai-user', JSON.stringify(user))
-    } else {
-      localStorage.removeItem('voyageai-user')
-    }
-  }, [user])
+  // Guarda sesión en localStorage
+  const saveSession = useCallback((tokenValue, userData) => {
+    localStorage.setItem('voyageai-token', tokenValue)
+    localStorage.setItem('voyageai-user',  JSON.stringify(userData))
+    setToken(tokenValue)
+    setUser(userData)
+  }, [])
 
-  // ── LOGIN — busca el correo y valida la contraseña en el JSON ──
-  const login = async (correo, password) => {
+  // Limpia sesión
+  const clearSession = useCallback(() => {
+    localStorage.removeItem('voyageai-token')
+    localStorage.removeItem('voyageai-user')
+    setToken(null)
+    setUser(null)
+  }, [])
+
+  // Login — llama al backend, recibe JWT y lo guarda
+  const login = useCallback(async (correo, password) => {
     setLoading(true)
     try {
-      await simulateApi()
-
-      const encontrado = usuariosData.find(
-        u => u.correo === correo && u.password === password
-      )
-
-      if (!encontrado) {
-        throw new Error('Correo o contraseña incorrectos')
+      const data = await authService.login(correo, password)
+      const userData = {
+        id:     data.id,
+        nombre: data.nombre,
+        correo: data.correo,
+        rol:    data.rol,
+        avatar: data.avatar,
       }
-
-      // Guarda solo los campos seguros, nunca la password
-      setUser(sanitizeUser(encontrado))
-      return { success: true, rol: encontrado.rol }
-
+      saveSession(data.token, userData)
+      return { success: true }
     } catch (err) {
-      return { success: false, error: err.message }
+      return { success: false, error: err.message || 'Credenciales incorrectas' }
     } finally {
       setLoading(false)
     }
-  }
+  }, [saveSession])
 
-  // ── REGISTER — verifica que el correo no exista ya ──
-  const register = async (nombre, correo, password) => {
+  // Registro — crea cuenta en backend y logea automáticamente
+  const register = useCallback(async (nombre, correo, password) => {
     setLoading(true)
     try {
-      await simulateApi()
-
-      const existe = usuariosData.find(u => u.correo === correo)
-      if (existe) {
-        throw new Error('Ya existe una cuenta con ese correo')
-      }
-
-      // Simula el nuevo usuario que devolvería el backend
-      const nuevoUsuario = {
-        id:             Date.now(),
+      const data = await authService.registro({
         nombre,
         correo,
-        rol:            'usuario',       // rol por defecto al registrarse
-        avatar:         nombre.slice(0, 2).toUpperCase(),
-        fechaRegistro:  new Date().toISOString().split('T')[0],
+        password,
+        avatar: nombre.slice(0, 2).toUpperCase(),
+      })
+      const userData = {
+        id:     data.id,
+        nombre: data.nombre,
+        correo: data.correo,
+        rol:    data.rol,
+        avatar: data.avatar,
       }
-
-      setUser(nuevoUsuario)
+      saveSession(data.token, userData)
       return { success: true }
-
     } catch (err) {
-      return { success: false, error: err.message }
+      return { success: false, error: err.message || 'Error al registrar' }
     } finally {
       setLoading(false)
     }
-  }
+  }, [saveSession])
 
-  const logout = () => setUser(null)
+  const logout = useCallback(() => {
+    clearSession()
+  }, [clearSession])
 
-  // Helper para verificar roles desde cualquier componente
   const isAdmin   = user?.rol === 'administrador'
   const isUsuario = user?.rol === 'usuario'
 
   return (
     <AuthContext.Provider value={{
       user,
+      token,
       loading,
       login,
       register,

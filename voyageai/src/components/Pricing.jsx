@@ -1,25 +1,113 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { FiCheck, FiX } from 'react-icons/fi'
 import Tooltip from './Tooltip'
-import pricingData from '../data/planes.json'
+import { planService } from '../services/planService.js'
+import planesFallback from '../data/planes.json'
 
-// Desestructura la configuración global y los planes por separado
-const { annualDiscount, plans } = pricingData
+/*
+ * PROBLEMA RESUELTO:
+ * La columna precio_anual está en 0 en PostgreSQL porque los INSERT
+ * originales no la llenaron. La calculamos siempre desde precioMensual
+ * y descuentoAnual para que el toggle Mensual / Anual funcione correctamente.
+ *
+ * Antes: precioAnual venía del JSON como valor hardcodeado (ej. 8)
+ * Ahora: se calcula → Math.round(precioMensual * (1 - descuento / 100))
+ */
 
-// Calcula el precio anual de un plan a partir del descuento del JSON
-// Ej: monthlyPrice=12, annualDiscount=35 → Math.round(12 * 0.65) = 8
-function calcAnnualPrice(monthlyPrice) {
-  return Math.round(monthlyPrice * (1 - annualDiscount / 100))
+// ── Features estáticas por slot según el índice del plan ──────────────
+// Vienen del JSON local porque no están en la BD de negocio
+import planesFeaturesData from '../data/planes.json'
+
+function getFeaturesForPlan(planIndex) {
+  const raw = planesFeaturesData?.plans ?? planesFeaturesData ?? []
+  const plan = Array.isArray(raw) ? raw[planIndex] : null
+  return plan?.features ?? []
+}
+
+// ── Normalización robusta — acepta tanto la API como el JSON fallback ──
+function normalizePlan(item, index) {
+  const precioMensual  = Number(item?.precioMensual  ?? item?.monthlyPrice  ?? 0)
+  const descuentoAnual = Number(item?.descuentoAnual ?? item?.annualDiscount ?? 0)
+
+  /*
+   * precioAnual en la BD puede ser 0 si no fue insertado.
+   * Lo calculamos siempre desde el descuento para que el toggle
+   * Mensual/Anual muestre valores correctos.
+   * Si el plan es gratuito (precioMensual = 0), el precio anual también es 0.
+   */
+  const precioAnual = precioMensual === 0
+    ? 0
+    : Math.round(precioMensual * (1 - descuentoAnual / 100))
+
+  // maxItinerarios: -1 en la BD significa ilimitado
+  const maxItinerariosRaw = item?.maxItinerarios ?? 3
+  const maxItinerarios    = Number(maxItinerariosRaw)
+
+  return {
+    id:              item?.id              ?? index + 1,
+    nombre:          item?.nombre          ?? item?.name        ?? 'Plan',
+    precioMensual,
+    precioAnual,
+    descuentoAnual,
+    maxItinerarios,
+    descripcion:     item?.descripcion     ?? item?.desc        ?? '',
+    destacado:       Boolean(item?.destacado ?? item?.featured  ?? false),
+    cta:             item?.cta             ?? null,
+    // Features de presentación — del JSON local (no están en la BD)
+    features:        item?.features        ?? getFeaturesForPlan(index),
+  }
+}
+
+// ── Acepta cualquier forma de respuesta ───────────────────────────────
+function getPlanesList(rawResponse) {
+  if (Array.isArray(rawResponse))               return rawResponse.map(normalizePlan)
+  if (Array.isArray(rawResponse?.content))      return rawResponse.content.map(normalizePlan)
+  if (Array.isArray(rawResponse?.plans))        return rawResponse.plans.map(normalizePlan)
+  if (Array.isArray(rawResponse?.planes))       return rawResponse.planes.map(normalizePlan)
+  if (Array.isArray(rawResponse?.data))         return rawResponse.data.map(normalizePlan)
+  return []
+}
+
+// ── Texto del botón CTA ───────────────────────────────────────────────
+function ctaTexto(plan) {
+  if (plan.cta) return plan.cta
+  if (plan.precioMensual === 0) return 'Gratis para siempre'
+  if (plan.precioMensual > 20)  return 'Contactar ventas'
+  return 'Empezar ahora'
 }
 
 export default function Pricing() {
-  const [annual, setAnnual] = useState(false)
+  const [planes,   setPlanes]   = useState([])
+  const [discount, setDiscount] = useState(35)
+  const [annual,   setAnnual]   = useState(false)
+  const [error,    setError]    = useState(false)
   const headerRef = useScrollReveal()
+
+  useEffect(() => {
+    const fallbackPlanes = getPlanesList(planesFallback)
+
+    planService.getTodos()
+      .then(lista => {
+        const normalized = getPlanesList(lista)
+        const planesToShow = normalized.length ? normalized : fallbackPlanes
+        setPlanes(planesToShow)
+
+        // Descuento máximo para el badge del toggle Anual
+        const maxDesc = Math.max(...planesToShow.map(p => p.descuentoAnual || 0), 0)
+        if (maxDesc > 0) setDiscount(maxDesc)
+      })
+      .catch(err => {
+        console.warn('API no disponible, usando fallback JSON:', err.message)
+        setPlanes(fallbackPlanes)
+        setError(true)
+      })
+  }, [])
 
   return (
     <section className="section" style={{ background: 'rgba(91,79,232,0.03)' }}>
       <div className="container">
+
         <div ref={headerRef} className="reveal pricing-header">
           <div className="section-tag">Precios</div>
           <h2 className="section-title">
@@ -30,7 +118,7 @@ export default function Pricing() {
             Sin sorpresas. Sin comisiones ocultas.
           </p>
 
-          {/* Toggle — el label del badge usa annualDiscount del JSON */}
+          {/* Toggle mensual / anual */}
           <div className="pricing-toggle" style={{ marginTop: '1.5rem' }}>
             <button
               className={`toggle-option ${!annual ? 'active' : ''}`}
@@ -43,7 +131,7 @@ export default function Pricing() {
               onClick={() => setAnnual(true)}
             >
               Anual
-              <Tooltip text={`Ahorra hasta un ${annualDiscount}%`}>
+              <Tooltip text={`Ahorra hasta un ${discount}%`}>
                 <span style={{
                   marginLeft: '6px',
                   background: 'rgba(16,185,129,0.2)',
@@ -53,54 +141,94 @@ export default function Pricing() {
                   borderRadius: '50px',
                   fontWeight: 700,
                 }}>
-                  -{annualDiscount}%
+                  -{discount}%
                 </span>
               </Tooltip>
             </button>
           </div>
         </div>
 
-        <div className="pricing-grid">
-          {plans.map((p) => {
-            // Precio calculado en tiempo de render, no leído del JSON
-            const price = annual ? calcAnnualPrice(p.monthlyPrice) : p.monthlyPrice
+        {/* Estado vacío */}
+        {planes.length === 0 && (
+          <div style={{
+            textAlign: 'center', color: 'var(--text-muted)', padding: '3rem 0',
+          }}>
+            <span className="auth-spinner"
+              style={{ width: 24, height: 24, borderWidth: 2, display: 'inline-block' }} />
+            <p style={{ marginTop: '0.75rem' }}>Cargando planes...</p>
+          </div>
+        )}
 
-            return (
-              <div key={p.id} className={`pricing-card ${p.featured ? 'featured' : ''}`}>
-                <div className="plan-name">{p.name}</div>
+        {/* Grid de planes */}
+        {planes.length > 0 && (
+          <div className="pricing-grid" style={{ marginTop: '2.5rem' }}>
+            {planes.map((p) => {
+              /*
+               * Precio que se muestra — cambia según el toggle
+               * Antes (JSON): venía hardcodeado como annualPrice
+               * Ahora (API):  se calcula desde precioMensual × (1 - descuento%)
+               */
+              const price = annual ? p.precioAnual : p.precioMensual
 
-                <div className="plan-price">
-                  <sup>$</sup>
-                  {price}
-                  {price > 0 && <span>/mes</span>}
+              return (
+                <div key={p.id}
+                  className={`pricing-card ${p.destacado ? 'featured' : ''}`}>
+
+                  <div className="plan-name">{p.nombre}</div>
+
+                  {/* Precio calculado dinámicamente */}
+                  <div className="plan-price">
+                    <sup>$</sup>
+                    {price}
+                    {price > 0 && <span>/mes</span>}
+                  </div>
+
+                  <p className="plan-desc">{p.descripcion}</p>
+
+                  {/* Features — combinación de lo que tiene la API + JSON local */}
+                  <ul className="plan-features">
+                    {p.features && p.features.length > 0 ? (
+                      p.features.map((f, fi) => (
+                        <li key={fi} className="plan-feature">
+                          {(f.ok ?? f.disponible ?? true)
+                            ? <FiCheck className="check" />
+                            : <FiX style={{ color: 'var(--text-muted)' }} />
+                          }
+                          <span style={{
+                            color: (f.ok ?? f.disponible ?? true)
+                              ? 'var(--text)'
+                              : 'var(--text-muted)',
+                          }}>
+                            {f.text ?? f.texto ?? ''}
+                          </span>
+                        </li>
+                      ))
+                    ) : (
+                      /* Si no hay features, muestra solo el límite de itinerarios */
+                      <li className="plan-feature">
+                        <FiCheck className="check" />
+                        <span>
+                          {p.maxItinerarios === -1 || p.maxItinerarios === 0
+                            ? 'Itinerarios ilimitados'
+                            : `${p.maxItinerarios} itinerario${p.maxItinerarios !== 1 ? 's' : ''} / mes`
+                          }
+                        </span>
+                      </li>
+                    )}
+                  </ul>
+
+                  <button
+                    className={`btn ${p.destacado ? 'btn-primary' : 'btn-outline'}`}
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    {ctaTexto(p)}
+                  </button>
                 </div>
+              )
+            })}
+          </div>
+        )}
 
-                <p className="plan-desc">{p.desc}</p>
-
-                <ul className="plan-features">
-                  {p.features.map((f) => (
-                    <li key={f.text} className="plan-feature">
-                      {f.ok
-                        ? <FiCheck className="check" />
-                        : <FiX style={{ color: 'var(--text-muted)' }} />
-                      }
-                      <span style={{ color: f.ok ? 'var(--text)' : 'var(--text-muted)' }}>
-                        {f.text}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  className={`btn ${p.featured ? 'btn-primary' : 'btn-outline'}`}
-                  style={{ width: '100%', justifyContent: 'center' }}
-                >
-                  {p.cta}
-                </button>
-              </div>
-            )
-          })}
-        </div>
       </div>
     </section>
   )

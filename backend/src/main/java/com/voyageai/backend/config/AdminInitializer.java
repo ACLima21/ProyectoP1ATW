@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -31,34 +31,50 @@ public class AdminInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        log.info("🚀 Verificando administrador inicial del sistema...");
-        Optional<Usuario> existingAdmin = usuarioRepository.findByCorreo(adminUsername);
+        log.info("🚀 Verificando administrador inicial...");
 
-        if (existingAdmin.isEmpty()) {
-            // Crear el admin desde cero
-            Usuario admin = new Usuario();
-            admin.setNombre("Administrador Principal");
-            admin.setCorreo(adminUsername);
-            admin.setPassword(passwordEncoder.encode(adminPassword));  // BCrypt hash
-            admin.setRol("administrador");
-            admin.setAvatar("AP");
-            admin.setFechaRegistro(LocalDate.now());
-            admin.setActivo(true);
-            usuarioRepository.save(admin);
-            log.info("✅ Administrador creado exitosamente: {}", adminUsername);
-
-        } else {
-            Usuario admin = existingAdmin.get();
-            // Si la contraseña NO es un hash BCrypt, la actualiza
-            // Los hashes BCrypt siempre empiezan con $2a$ o $2b$
-            if (!admin.getPassword().startsWith("$2a$") &&
-                !admin.getPassword().startsWith("$2b$")) {
+        // ── 1. Crear o actualizar el admin ────────────────────
+        usuarioRepository.findByCorreo(adminUsername).ifPresentOrElse(
+            admin -> {
+                if (!admin.getPassword().startsWith("$2a$") &&
+                    !admin.getPassword().startsWith("$2b$")) {
+                    admin.setPassword(passwordEncoder.encode(adminPassword));
+                    usuarioRepository.save(admin);
+                    log.info("🔄 Contraseña del admin actualizada a BCrypt");
+                } else {
+                    log.info("✅ Admin ya existe con contraseña hasheada");
+                }
+            },
+            () -> {
+                Usuario admin = new Usuario();
+                admin.setNombre("Administrador Principal");
+                admin.setCorreo(adminUsername);
                 admin.setPassword(passwordEncoder.encode(adminPassword));
+                admin.setRol("administrador");
+                admin.setAvatar("AP");
+                admin.setFechaRegistro(LocalDate.now());
+                admin.setActivo(true);
                 usuarioRepository.save(admin);
-                log.info("🔄 Contraseña del administrador actualizada a BCrypt: {}", adminUsername);
-            } else {
-                log.info("✅ Administrador ya existe con contraseña hasheada: {}", adminUsername);
+                log.info("✅ Administrador creado: {}", adminUsername);
             }
+        );
+
+        // ── 2. Migrar contraseñas en texto plano a BCrypt ─────
+        log.info("🔄 Migrando contraseñas sin hashear...");
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        long migrados = 0;
+        for (Usuario u : usuarios) {
+            if (!u.getPassword().startsWith("$2a$") &&
+                !u.getPassword().startsWith("$2b$")) {
+                u.setPassword(passwordEncoder.encode(u.getPassword()));
+                usuarioRepository.save(u);
+                migrados++;
+            }
+        }
+        if (migrados > 0) {
+            log.info("✅ {} contraseñas migradas a BCrypt", migrados);
+        } else {
+            log.info("✅ Todas las contraseñas ya están hasheadas");
         }
     }
 }

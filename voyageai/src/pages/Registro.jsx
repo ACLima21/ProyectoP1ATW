@@ -37,22 +37,27 @@ export default function Registro() {
     setErrors(prev => ({ ...prev, [name]: ''    }))
   }
 
-const validate = () => {
-const e = {}
-if (form.name.trim().length < 2)                        e.name     = 'Mínimo 2 caracteres'
-if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))   e.email    = 'Email inválido'
-if (form.password.length < 6)                           e.password = 'Mínimo 6 caracteres'
-if (form.password !== form.confirm)                     e.confirm  = 'Las contraseñas no coinciden'
-return e
-}
+  const validate = () => {
+  const e = {}
+  if (form.name.trim().length < 2)                        e.name     = 'Mínimo 2 caracteres'
+  if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))   e.email    = 'Email inválido'
+  if (form.password.length < 6)                           e.password = 'Mínimo 6 caracteres'
+  if (form.password !== form.confirm)                     e.confirm  = 'Las contraseñas no coinciden'
+  return e
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
 
+    // register ahora llama a POST /api/auth/registro y guarda el JWT automáticamente
     const result = await register(form.name, form.email, form.password)
-    if (result.success) navigate('/')
+    if (result.success) {
+      navigate('/')
+    } else {
+      setErrors({ global: result.error })
+    }
   }
 
   return (

@@ -14,6 +14,8 @@ import com.voyageai.backend.repository.ItinerarioRepository;
 import com.voyageai.backend.repository.UsuarioRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,14 @@ public class ItinerarioService {
     public List<Itinerario> findAll()                  { return itinerarioRepository.findAll(); }
     public List<Itinerario> findByUsuario(Long uid)    { return itinerarioRepository.findByUsuarioId(uid); }
     public List<Itinerario> findByEstado(String estado){ return itinerarioRepository.findByEstado(estado); }
+
+    public Page<Itinerario> findAll(Pageable pageable) {
+        return itinerarioRepository.findAll(pageable);
+    }
+
+    public Page<Itinerario> findByUsuario(Long usuarioId, Pageable pageable) {
+        return itinerarioRepository.findByUsuarioId(usuarioId, pageable);
+    }
 
     public Itinerario findById(Long id) {
         return itinerarioRepository.findById(id)

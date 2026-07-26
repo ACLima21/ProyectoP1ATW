@@ -3,13 +3,19 @@ package com.voyageai.backend.controller;
 import com.voyageai.backend.dto.MensajeResponse;
 import com.voyageai.backend.entity.Usuario;
 import com.voyageai.backend.service.UsuarioService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.*;
+
 import java.util.List;
 
 @RestController
@@ -21,9 +27,9 @@ public class UsuarioController {
     @Autowired private UsuarioService usuarioService;
 
     @GetMapping
-    @Operation(summary = "Listar todos los usuarios")
-    public ResponseEntity<List<Usuario>> getAll() {
-        return ResponseEntity.ok(usuarioService.findAll());
+    public ResponseEntity<Page<Usuario>> getAll(
+        @PageableDefault(size = 150) Pageable pageable) {
+        return ResponseEntity.ok(usuarioService.findAll(pageable));
     }
 
     @GetMapping("/{id}")

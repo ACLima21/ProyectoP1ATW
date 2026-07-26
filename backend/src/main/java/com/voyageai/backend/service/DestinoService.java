@@ -5,6 +5,8 @@ import com.voyageai.backend.exception.ResourceNotFoundException;
 import com.voyageai.backend.repository.DestinoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -19,6 +21,18 @@ public class DestinoService {
     public List<Destino> findActivos()       { return destinoRepository.findByActivo(true); }
     public List<Destino> buscarPorNombre(String nombre) {
         return destinoRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    public Page<Destino> findAll(Pageable pageable) {
+        return destinoRepository.findAll(pageable);
+    }
+
+    public Page<Destino> findActivos(Pageable pageable) {
+        return destinoRepository.findByActivo(true, pageable);
+    }
+
+    public Page<Destino> buscarPorNombre(String nombre, Pageable pageable) {
+        return destinoRepository.findByNombreContainingIgnoreCase(nombre, pageable);
     }
 
     public Destino findById(Long id) {

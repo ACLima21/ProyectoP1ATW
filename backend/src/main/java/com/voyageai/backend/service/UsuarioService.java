@@ -6,6 +6,8 @@ import com.voyageai.backend.exception.ResourceNotFoundException;
 import com.voyageai.backend.repository.UsuarioRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ public class UsuarioService {
     @Autowired private PasswordEncoder passwordEncoder;
 
     public List<Usuario> findAll() { return usuarioRepository.findAll(); }
+
+    public Page<Usuario> findAll(Pageable pageable) { return usuarioRepository.findAll(pageable); }
 
     public Usuario findById(Long id) {
         return usuarioRepository.findById(id)

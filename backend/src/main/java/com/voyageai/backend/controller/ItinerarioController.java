@@ -5,13 +5,19 @@ import com.voyageai.backend.dto.MensajeResponse;
 import com.voyageai.backend.entity.Itinerario;
 import com.voyageai.backend.entity.ItinerarioActividad;
 import com.voyageai.backend.service.ItinerarioService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +30,9 @@ public class ItinerarioController {
     @Autowired private ItinerarioService itinerarioService;
 
     @GetMapping
-    @Operation(summary = "Listar todos los itinerarios")
-    public ResponseEntity<List<Itinerario>> getAll() {
-        return ResponseEntity.ok(itinerarioService.findAll());
+    public ResponseEntity<Page<Itinerario>> getAll(
+        @PageableDefault(size = 150) Pageable pageable) {
+        return ResponseEntity.ok(itinerarioService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
@@ -36,9 +42,11 @@ public class ItinerarioController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    @Operation(summary = "Listar itinerarios de un usuario")
-    public ResponseEntity<List<Itinerario>> getByUsuario(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(itinerarioService.findByUsuario(usuarioId));
+    public ResponseEntity<Page<Itinerario>> getByUsuario(
+        @PathVariable Long usuarioId,
+        @PageableDefault(size = 150) Pageable pageable) {
+        return ResponseEntity.ok(
+            itinerarioService.findByUsuario(usuarioId, pageable));
     }
 
     @GetMapping("/estado/{estado}")

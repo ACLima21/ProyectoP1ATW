@@ -3,13 +3,19 @@ package com.voyageai.backend.controller;
 import com.voyageai.backend.dto.MensajeResponse;
 import com.voyageai.backend.entity.Destino;
 import com.voyageai.backend.service.DestinoService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.*;
+
 import java.util.List;
 
 @RestController
@@ -21,15 +27,15 @@ public class DestinoController {
     @Autowired private DestinoService destinoService;
 
     @GetMapping
-    @Operation(summary = "Listar todos los destinos")
-    public ResponseEntity<List<Destino>> getAll() {
-        return ResponseEntity.ok(destinoService.findAll());
+    public ResponseEntity<Page<Destino>> getAll(
+        @PageableDefault(size = 150) Pageable pageable) {
+        return ResponseEntity.ok(destinoService.findAll(pageable));
     }
 
     @GetMapping("/activos")
-    @Operation(summary = "Listar solo destinos activos")
-    public ResponseEntity<List<Destino>> getActivos() {
-        return ResponseEntity.ok(destinoService.findActivos());
+    public ResponseEntity<Page<Destino>> getActivos(
+        @PageableDefault(size = 150) Pageable pageable) {
+        return ResponseEntity.ok(destinoService.findActivos(pageable));
     }
 
     @GetMapping("/{id}")
@@ -39,9 +45,11 @@ public class DestinoController {
     }
 
     @GetMapping("/buscar")
-    @Operation(summary = "Buscar destinos por nombre (texto parcial)")
-    public ResponseEntity<List<Destino>> buscar(@RequestParam String nombre) {
-        return ResponseEntity.ok(destinoService.buscarPorNombre(nombre));
+    public ResponseEntity<Page<Destino>> buscar(
+        @RequestParam String nombre,
+        @PageableDefault(size = 150) Pageable pageable) {
+        return ResponseEntity.ok(
+            destinoService.buscarPorNombre(nombre, pageable));
     }
 
     @PostMapping

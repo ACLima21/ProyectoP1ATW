@@ -35,6 +35,7 @@ export default function Login() {
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
 
+    // login ahora llama a POST /api/auth/login y guarda el JWT
     const result = await login(form.email, form.password)
     if (result.success) {
       navigate(from, { replace: true })

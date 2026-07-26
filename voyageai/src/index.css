@@ -1963,3 +1963,225 @@ select.form-control option { background: var(--dark-card); }
   .dash-page    { grid-template-columns: 260px 1fr; }
   .dash-main    { padding: 2.5rem; }
 }
+
+/* =========================================
+   PAGINACIÓN
+   ========================================= */
+.pagination-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.pagination-prefetch {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--primary-light);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--dark-card);
+  border: 1.5px solid var(--dark-border);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--primary-light);
+  color: var(--white);
+  background: rgba(91,79,232,0.1);
+}
+
+.page-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.page-ellipsis {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 0 0.25rem;
+  line-height: 36px;
+}
+
+.pagination-size {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.size-btn {
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: 1.5px solid var(--dark-border);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.size-btn:hover,
+.size-btn.active {
+  border-color: var(--primary-light);
+  color: var(--white);
+  background: rgba(91,79,232,0.1);
+}
+
+@media (min-width: 768px) {
+  .pagination-wrap {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* =========================================
+   ADMIN PANEL — TABLAS Y COMPONENTES
+   ========================================= */
+.admin-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.admin-table thead tr {
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.admin-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid var(--dark-border);
+  transition: background var(--transition);
+}
+
+.admin-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(91,79,232,0.05);
+}
+
+.admin-table td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+}
+
+.admin-td-main {
+  font-weight: 600;
+  color: var(--white);
+}
+
+.admin-td-muted {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.admin-empty-row {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2.5rem !important;
+  font-size: 0.9rem;
+}
+
+.admin-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 50px;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.admin-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: rgba(91,79,232,0.1);
+  border: 1px solid rgba(91,79,232,0.2);
+  color: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.admin-action-btn:hover {
+  background: rgba(91,79,232,0.2);
+  border-color: var(--primary-light);
+}
+
+.admin-action-btn.danger {
+  background: rgba(239,68,68,0.1);
+  border-color: rgba(239,68,68,0.2);
+  color: var(--danger);
+}
+
+.admin-action-btn.danger:hover {
+  background: rgba(239,68,68,0.2);
+  border-color: var(--danger);
+}
