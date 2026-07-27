@@ -38,6 +38,14 @@ public class DestinoController {
         return ResponseEntity.ok(destinoService.findActivos(pageable));
     }
 
+    // Endpoint público — devuelve siempre los mismos 5 destinos fijos
+    // (definidos en DestinoService.CAROUSEL_IDS) para el carrusel de la landing.
+    @GetMapping("/carousel")
+    @Operation(summary = "Destinos fijos para el carrusel de la landing")
+    public ResponseEntity<List<Destino>> getCarousel() {
+        return ResponseEntity.ok(destinoService.findCarousel());
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Obtener destino por ID")
     public ResponseEntity<Destino> getById(@PathVariable Long id) {

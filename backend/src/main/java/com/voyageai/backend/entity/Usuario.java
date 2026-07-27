@@ -1,5 +1,6 @@
 package com.voyageai.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -9,6 +10,10 @@ import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "usuarios")
+// Evita que Jackson intente serializar propiedades internas del proxy de
+// Hibernate (hibernateLazyInitializer/handler) cuando esta entidad se
+// accede como una relación LAZY desde otra (ej. Itinerario.usuario).
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Usuario {
 

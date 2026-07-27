@@ -45,12 +45,32 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/destinos/activos").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/destinos/buscar").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/destinos/carousel").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/planes/todos").permitAll()
 
                 // ── GET autenticado ────────────────────────────────
                 .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
 
-                // ── Escritura solo ADMIN ───────────────────────────
+                // ── Escritura permitida a CUALQUIER usuario autenticado
+                //    (no solo ADMIN) — la protección contra abuso vive en
+                //    el service, no aquí:
+                //    - POST /api/itinerarios/completo: un usuario normal
+                //      solo puede crear itinerarios para SÍ MISMO
+                //      (ItinerarioService ignora el usuarioId del body si
+                //      quien llama no es admin). Un admin puede crear para
+                //      cualquier usuario, igual que antes.
+                //    - PATCH /api/usuarios/me/plan: el usuario solo puede
+                //      cambiar SU PROPIO plan (no toca otros campos ni
+                //      otros usuarios).
+                // Deben ir ANTES de las reglas genéricas de ADMIN de abajo,
+                // porque Spring Security usa la primera regla que matchee.
+                .requestMatchers(HttpMethod.POST,  "/api/itinerarios/completo").authenticated()
+                .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me/plan").authenticated()
+                // El asterisco matchea el {id} del itinerario — la protección de que
+                // solo el dueño (o un admin) pueda generarlo vive en ItinerarioService.
+                .requestMatchers(HttpMethod.POST,  "/api/itinerarios/*/resumen-ia").authenticated()
+
+                // ── Escritura solo ADMIN (todo lo demás) ───────────
                 .requestMatchers(HttpMethod.POST,   "/api/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,    "/api/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH,  "/api/**").hasRole("ADMIN")

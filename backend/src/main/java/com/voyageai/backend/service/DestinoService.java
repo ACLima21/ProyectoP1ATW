@@ -15,6 +15,11 @@ import java.util.List;
 @Service
 public class DestinoService {
 
+    // IDs fijos de los destinos que se muestran en el carrusel de la landing.
+    // Se eligieron manualmente (no dependen de orden de tabla ni paginación).
+    // Para cambiar cuáles se muestran, solo hay que editar esta lista.
+    private static final List<Long> CAROUSEL_IDS = List.of(82L, 83L, 84L, 85L, 86L);
+
     @Autowired private DestinoRepository destinoRepository;
 
     public List<Destino> findAll()           { return destinoRepository.findAll(); }
@@ -38,6 +43,13 @@ public class DestinoService {
     public Destino findById(Long id) {
         return destinoRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Destino no encontrado con id: " + id));
+    }
+
+    // Destinos fijos para el carrusel de la landing (GET /api/destinos/carousel).
+    // Usa findAllById, que ya viene incluido en JpaRepository — no requiere
+    // ningún método nuevo en DestinoRepository.
+    public List<Destino> findCarousel() {
+        return destinoRepository.findAllById(CAROUSEL_IDS);
     }
 
     @Transactional

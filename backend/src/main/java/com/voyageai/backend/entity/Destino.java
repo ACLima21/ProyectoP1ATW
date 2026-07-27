@@ -6,9 +6,12 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "destinos")
 @Data @NoArgsConstructor @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Destino {
 
     @Id

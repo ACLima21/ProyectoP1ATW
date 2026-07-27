@@ -1,5 +1,6 @@
 package com.voyageai.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -9,6 +10,10 @@ import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "itinerarios")
+// Evita que Jackson intente serializar propiedades internas del proxy de
+// Hibernate (hibernateLazyInitializer/handler) cuando esta entidad se
+// accede como una relación LAZY desde otra (ej. ItinerarioActividad.itinerario).
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Itinerario {
 
@@ -56,6 +61,12 @@ public class Itinerario {
 
     @Column(name = "notas", columnDefinition = "TEXT")
     private String notas;
+
+    // Texto descriptivo generado por el modelo de IA local (Ollama) a partir
+    // de los datos del itinerario — ver OllamaService.generarResumenItinerario.
+    // Se guarda por separado de `notas` (que es lo que escribió el usuario).
+    @Column(name = "resumen_ia", columnDefinition = "TEXT")
+    private String resumenIa;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;

@@ -6,7 +6,7 @@ import { FiCompass, FiLogOut, FiUser, FiChevronDown } from 'react-icons/fi'
 import ThemeToggle from './ThemeToggle'
 
 const SECTIONS = ['inicio', 'features', 'destinos', 'precios', 'contacto']
-const LABELS   = { inicio: 'Inicio', features: 'Características', destinos: 'Destinos', precios: 'Precios', contacto: 'Contacto' }
+const LABELS   = { inicio: 'Inicio', features: 'Características', destinos: 'Destinos', precios: 'Precios', contacto: 'Planifica tu viaje' }
 
 export default function Navbar() {
   const [scrolled,      setScrolled]      = useState(false)

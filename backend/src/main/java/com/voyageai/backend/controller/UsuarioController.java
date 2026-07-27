@@ -1,5 +1,6 @@
 package com.voyageai.backend.controller;
 
+import com.voyageai.backend.dto.AsignarPlanRequest;
 import com.voyageai.backend.dto.MensajeResponse;
 import com.voyageai.backend.entity.Usuario;
 import com.voyageai.backend.service.UsuarioService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.*;
 
@@ -54,6 +56,18 @@ public class UsuarioController {
     @Operation(summary = "Actualizar datos del usuario (ADMIN)")
     public ResponseEntity<Usuario> actualizar(@PathVariable Long id, @RequestBody Usuario datos) {
         return ResponseEntity.ok(usuarioService.actualizar(id, datos));
+    }
+
+    // Auto-servicio: cualquier usuario autenticado puede cambiar SU PROPIO
+    // plan (simulado, sin pasarela de pago). No requiere rol ADMIN porque
+    // solo afecta al usuario dueño del token — ver SecurityConfig.
+    @PatchMapping("/me/plan")
+    @Operation(summary = "Asignar el plan de suscripción al usuario autenticado (simulado, sin pago real)")
+    public ResponseEntity<Usuario> asignarMiPlan(
+        Authentication authentication,
+        @Valid @RequestBody AsignarPlanRequest request) {
+        return ResponseEntity.ok(
+            usuarioService.asignarPlanPropio(authentication.getName(), request.getPlanId()));
     }
 
     @DeleteMapping("/{id}")

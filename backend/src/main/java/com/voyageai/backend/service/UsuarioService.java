@@ -1,8 +1,10 @@
 package com.voyageai.backend.service;
 
+import com.voyageai.backend.entity.PlanSuscripcion;
 import com.voyageai.backend.entity.Usuario;
 import com.voyageai.backend.exception.BusinessException;
 import com.voyageai.backend.exception.ResourceNotFoundException;
+import com.voyageai.backend.repository.PlanSuscripcionRepository;
 import com.voyageai.backend.repository.UsuarioRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import java.util.List;
 public class UsuarioService {
 
     @Autowired private UsuarioRepository usuarioRepository;
+    @Autowired private PlanSuscripcionRepository planSuscripcionRepository;
     @Autowired private PasswordEncoder passwordEncoder;
 
     public List<Usuario> findAll() { return usuarioRepository.findAll(); }
@@ -58,6 +61,36 @@ public class UsuarioService {
         usuario.setAvatar(datos.getAvatar());
         usuario.setPlan(datos.getPlan());
         return usuarioRepository.save(usuario);
+    }
+
+    /*
+     * Auto-asignación de plan (MVP sin pasarela de pago real).
+     *
+     * A propósito NO reutiliza actualizar(id, datos) ni el PUT genérico:
+     * ese endpoint es solo-ADMIN y acepta cualquier campo del usuario
+     * (incluido el rol). Este método solo toca el plan, y solo del usuario
+     * que llegó autenticado — nunca de otro usuario por ID.
+     */
+    @Transactional
+    public Usuario asignarPlanPropio(String correo, Long planId) {
+        log.info("💳 Asignando plan {} al usuario con correo: {}", planId, correo);
+
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                "Usuario no encontrado con correo: " + correo));
+
+        PlanSuscripcion plan = planSuscripcionRepository.findById(planId)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                "Plan no encontrado con id: " + planId));
+
+        if (!Boolean.TRUE.equals(plan.getActivo())) {
+            throw new BusinessException("El plan seleccionado no está disponible: " + plan.getNombre());
+        }
+
+        usuario.setPlan(plan);
+        Usuario saved = usuarioRepository.save(usuario);
+        log.info("✅ Usuario {} ahora tiene el plan: {}", correo, plan.getNombre());
+        return saved;
     }
 
     @Transactional

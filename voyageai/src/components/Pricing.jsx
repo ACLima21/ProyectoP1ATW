@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { FiCheck, FiX } from 'react-icons/fi'
 import Tooltip from './Tooltip'
 import { planService } from '../services/planService.js'
+import { usuarioService } from '../services/usuarioService.js'
+import { useAuth } from '../context/AuthContext'
 import planesFallback from '../data/planes.json'
 
 /*
@@ -83,6 +86,13 @@ export default function Pricing() {
   const [annual,   setAnnual]   = useState(false)
   const [error,    setError]    = useState(false)
   const headerRef = useScrollReveal()
+  const { user } = useAuth()
+  const navigate = useNavigate()
+
+  // Estado del flujo de "elegir plan" — simulado, sin pasarela de pago real
+  const [planEnProceso, setPlanEnProceso] = useState(null) // id del plan que se está enviando
+  const [planAsignado,  setPlanAsignado]  = useState(null) // id del plan recién asignado (feedback temporal)
+  const [errorPlan,     setErrorPlan]     = useState('')
 
   useEffect(() => {
     const fallbackPlanes = getPlanesList(planesFallback)
@@ -103,6 +113,29 @@ export default function Pricing() {
         setError(true)
       })
   }, [])
+
+  // Click en el botón de un plan.
+  // - Sin sesión: manda a Registro (no tiene sentido pedir login para un
+  //   plan "gratis", pero así el usuario ya queda con cuenta creada).
+  // - Con sesión: asigna el plan de verdad (simulado, sin pago) vía la API.
+  const handleElegirPlan = async (plan) => {
+    if (!user) {
+      navigate('/registro')
+      return
+    }
+
+    setErrorPlan('')
+    setPlanEnProceso(plan.id)
+    try {
+      await usuarioService.asignarPlan(plan.id)
+      setPlanAsignado(plan.id)
+      setTimeout(() => setPlanAsignado(null), 3000)
+    } catch (err) {
+      setErrorPlan(err.message || 'No se pudo asignar el plan. Intenta de nuevo.')
+    } finally {
+      setPlanEnProceso(null)
+    }
+  }
 
   return (
     <section className="section" style={{ background: 'rgba(91,79,232,0.03)' }}>
@@ -169,6 +202,8 @@ export default function Pricing() {
                * Ahora (API):  se calcula desde precioMensual × (1 - descuento%)
                */
               const price = annual ? p.precioAnual : p.precioMensual
+              const estaProcesando = planEnProceso === p.id
+              const fueAsignado    = planAsignado === p.id
 
               return (
                 <div key={p.id}
@@ -220,13 +255,28 @@ export default function Pricing() {
                   <button
                     className={`btn ${p.destacado ? 'btn-primary' : 'btn-outline'}`}
                     style={{ width: '100%', justifyContent: 'center' }}
+                    onClick={() => handleElegirPlan(p)}
+                    disabled={estaProcesando}
                   >
-                    {ctaTexto(p)}
+                    {estaProcesando
+                      ? 'Procesando...'
+                      : fueAsignado
+                        ? '✓ Plan activado'
+                        : ctaTexto(p)}
                   </button>
                 </div>
               )
             })}
           </div>
+        )}
+
+        {errorPlan && (
+          <p style={{
+            textAlign: 'center', color: 'var(--danger)',
+            marginTop: '1.5rem', fontSize: '0.9rem',
+          }}>
+            {errorPlan}
+          </p>
         )}
 
       </div>

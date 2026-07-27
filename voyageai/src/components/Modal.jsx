@@ -30,10 +30,10 @@ export default function Modal({ onClose }) {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
         <div className="modal-icon"><FiSmile style={{ color: '#10B981' }} /></div>
-        <h3>¡Mensaje enviado!</h3>
+        <h3>¡Itinerario creado!</h3>
         <p>
-          Hemos recibido tu consulta. Haz clic para ver
-          la confirmación completa de tu solicitud.
+          Guardamos tu solicitud de viaje como borrador. Haz clic para ver
+          la confirmación completa y encontrarlo luego en tu panel.
         </p>
         <button
           className="btn btn-primary"

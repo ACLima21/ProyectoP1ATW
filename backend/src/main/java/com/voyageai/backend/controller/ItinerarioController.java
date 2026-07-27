@@ -63,14 +63,29 @@ public class ItinerarioController {
 
     @PostMapping("/completo")
     @Operation(
-        summary = "Registrar itinerario completo con actividades (ADMIN) — proceso @Transactional",
+        summary = "Registrar itinerario completo con actividades — @Transactional",
         description = "Crea el itinerario y todas sus actividades en una sola transacción. " +
-            "Si alguna actividad falla, se hace rollback completo."
+            "Disponible para cualquier usuario autenticado: un usuario con rol 'usuario' " +
+            "solo puede crear el itinerario para SÍ MISMO (el backend ignora el usuarioId " +
+            "del body y usa su propia identidad); un ADMIN puede crear a nombre de cualquier " +
+            "usuario, igual que antes. Si alguna actividad falla, se hace rollback completo."
     )
     public ResponseEntity<Itinerario> registrarCompleto(
         @Valid @RequestBody ItinerarioCompletoRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(itinerarioService.registrarItinerarioCompleto(request));
+    }
+
+    @PostMapping("/{id}/resumen-ia")
+    @Operation(
+        summary = "Generar un resumen personalizado del itinerario usando IA (Ollama, modelo local)",
+        description = "Llama a un modelo de lenguaje corriendo localmente vía Ollama " +
+            "(http://localhost:11434) para redactar un resumen descriptivo del viaje a " +
+            "partir de sus datos reales (destino, fechas, personas, presupuesto, notas). " +
+            "Solo el dueño del itinerario o un ADMIN pueden generarlo."
+    )
+    public ResponseEntity<Itinerario> generarResumenIa(@PathVariable Long id) {
+        return ResponseEntity.ok(itinerarioService.generarResumenIa(id));
     }
 
     @PatchMapping("/{id}/estado")

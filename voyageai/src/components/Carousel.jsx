@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { destinoService } from '../services/destinoService.js'
+import { useFlow } from '../context/FlowContext'
 
 /*
  * Las imágenes siguen siendo locales — se resuelven via imgKey de la API.
  * Antes: import destinosData from '../data/destinos.json' + IMAGE_MAP hardcodeado
- * Ahora: los datos vienen de GET /api/destinos/activos, pero las fotos
- *        siguen en assets/ porque el backend no sirve archivos estáticos.
+ * Ahora: los datos vienen de GET /api/destinos/carousel (5 destinos fijos,
+ *        definidos en el backend por ID), pero las fotos siguen en assets/
+ *        porque el backend no sirve archivos estáticos.
  */
 import imgTokyo from '../assets/tokyo.jpg'
 import imgCusco from '../assets/cusco.jpg'
@@ -51,17 +53,17 @@ export default function Carousel() {
   const [current,       setCurrent]       = useState(0)
   const [slidesVisible, setSlidesVisible] = useState(getSlidesVisible)
   const headerRef = useScrollReveal()
+  const { setDestinoSeleccionado } = useFlow()
 
-  // Carga desde la API — antes era destinosData de destinos.json
+  // Carga desde la API — GET /api/destinos/carousel devuelve un array plano
+  // (List<Destino>) con siempre los mismos 5 destinos fijos, NO un Page.
   useEffect(() => {
-    destinoService.getActivos({ page: 0, size: 150 })
-      .then(result => {
-        // La API devuelve un Page<Destino>: { content: [...], totalElements, ... }
-        const lista = result?.content ?? []
-        setDestinos(lista)
+    destinoService.getCarousel()
+      .then(lista => {
+        setDestinos(Array.isArray(lista) ? lista : [])
       })
       .catch(err => {
-        console.error('Error al cargar destinos:', err)
+        console.error('Error al cargar destinos del carrusel:', err)
         setDestinos([])
       })
       .finally(() => setLoading(false))
@@ -81,6 +83,13 @@ export default function Carousel() {
 
   const prev = useCallback(() => setCurrent(c => Math.max(c - 1, 0)), [])
   const next = useCallback(() => setCurrent(c => Math.min(c + 1, maxIndex)), [maxIndex])
+
+  // "Ver ruta" — guarda el destino elegido en FlowContext y lleva al
+  // usuario directo al formulario de creación de itinerario, ya precargado.
+  const handleVerRuta = useCallback((destino) => {
+    setDestinoSeleccionado(destino)
+    document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })
+  }, [setDestinoSeleccionado])
 
   if (loading) {
     return (
@@ -204,7 +213,8 @@ export default function Carousel() {
                           Desde {precio} <span>/ persona</span>
                         </div>
                         <button className="btn btn-primary"
-                          style={{ padding: '0.55rem 1.2rem', fontSize: '0.82rem' }}>
+                          style={{ padding: '0.55rem 1.2rem', fontSize: '0.82rem' }}
+                          onClick={() => handleVerRuta(d)}>
                           Ver ruta
                         </button>
                       </div>
@@ -216,7 +226,8 @@ export default function Carousel() {
           </div>
         </div>
 
-        {/* Dots de navegación */}
+        {/* Dots de navegación — con 5 destinos fijos, esto siempre da entre
+            2 y 4 dots (según slidesVisible: 3, 2 o 1), nunca decenas */}
         <div className="carousel-dots">
           {Array.from({ length: maxIndex + 1 }).map((_, i) => (
             <button
