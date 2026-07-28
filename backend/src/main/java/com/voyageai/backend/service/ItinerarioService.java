@@ -211,6 +211,9 @@ public class ItinerarioService {
             throw new BusinessException("Estado inválido. Valores permitidos: " + estadosValidos);
         }
         Itinerario itinerario = findById(id);
+        // Solo el dueño del itinerario o un ADMIN puede cambiar el estado.
+        // Mismo criterio de seguridad que generarResumenIa.
+        verificarPropietarioOAdmin(itinerario);
         itinerario.setEstado(nuevoEstado);
         return itinerarioRepository.save(itinerario);
     }

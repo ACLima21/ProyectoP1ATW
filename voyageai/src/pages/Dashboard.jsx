@@ -5,26 +5,43 @@ import { useBufferedPagination } from '../hooks/useBufferedPagination'
 import { itinerarioService } from '../services/itinerarioService'
 import Pagination from '../components/Pagination'
 import ThemeToggle from '../components/ThemeToggle'
+import ItinerarioDetalleModal from '../components/ItinerarioDetalleModal'
 import {
   FiCompass, FiLogOut, FiMap, FiHeart, FiCalendar,
-  FiTrendingUp, FiArrowRight, FiShield, FiSearch
+  FiTrendingUp, FiArrowRight, FiShield, FiSearch,
+  FiSend, FiCheckCircle, FiMapPin, FiFileText, FiGlobe, FiSmile,
+  FiEye, FiChevronDown, FiX
 } from 'react-icons/fi'
 
-const ESTADO_COLOR = {
-  completado: { bg: 'rgba(16,185,129,0.1)',  color: '#10B981' },
-  activo:     { bg: 'rgba(91,79,232,0.1)',   color: '#818CF8' },
-  borrador:   { bg: 'rgba(245,158,11,0.1)',  color: '#F59E0B' },
-  cancelado:  { bg: 'rgba(239,68,68,0.1)',   color: '#EF4444' },
+const ESTADO_META = {
+  completado: { label: 'Completado', bg: 'rgba(16,185,129,0.12)', color: '#10B981' },
+  activo: { label: 'Activo', bg: 'rgba(91,79,232,0.12)', color: '#818CF8' },
+  borrador: { label: 'Borrador', bg: 'rgba(245,158,11,0.12)', color: '#F59E0B' },
+  cancelado: { label: 'Cancelado', bg: 'rgba(239,68,68,0.12)', color: '#EF4444' },
 }
+
+const ESTADOS_VALIDOS = ['borrador', 'activo', 'completado', 'cancelado']
+
+const FILTROS = [
+  { key: '', label: 'Todos' },
+  { key: 'activo', label: 'Activos' },
+  { key: 'borrador', label: 'Borrador' },
+  { key: 'completado', label: 'Completados' },
+  { key: 'cancelado', label: 'Cancelados' },
+]
 
 export default function Dashboard() {
   const { user, logout, isAdmin } = useAuth()
   const navigate = useNavigate()
   const [busqueda, setBusqueda] = useState('')
+  const [filtroEstado, setFiltroEstado] = useState('')
+  const [modalItem, setModalItem] = useState(null)
+
+  // Estado local para reflejar cambios de estado sin recargar
+  const [estadosLocales, setEstadosLocales] = useState({})
 
   const handleLogout = () => { logout(); navigate('/') }
 
-  // fetchFn para el hook de paginación — conectado a la API real
   const fetchItinerarios = useCallback(
     ({ page, size }) =>
       itinerarioService.getMisItinerarios(user.id, { page, size }),
@@ -39,23 +56,54 @@ export default function Dashboard() {
     loading, prefetching, refetch,
   } = useBufferedPagination(fetchItinerarios, 5)
 
-  // Filtro de búsqueda — opera sobre el buffer actual (client-side)
+  // Fusiona estados locales (cambios optimistas) con los datos del buffer
+  const itinerariosConEstado = useMemo(() =>
+    itinerarios.map(i => ({
+      ...i,
+      estado: estadosLocales[i.id] ?? i.estado,
+    })),
+    [itinerarios, estadosLocales]
+  )
+
+  // Filtrado: estado + búsqueda
   const itinerariosFiltrados = useMemo(() => {
+    let lista = itinerariosConEstado
+    if (filtroEstado) lista = lista.filter(i => i.estado === filtroEstado)
     const texto = busqueda.toLowerCase().trim()
-    if (!texto) return itinerarios
-    return itinerarios.filter(i =>
+    if (texto) lista = lista.filter(i =>
       i.titulo?.toLowerCase().includes(texto) ||
       i.estado?.toLowerCase().includes(texto) ||
       i.destino?.nombre?.toLowerCase().includes(texto)
     )
-  }, [itinerarios, busqueda])
+    return lista
+  }, [itinerariosConEstado, filtroEstado, busqueda])
 
-  // Stats calculadas desde los datos reales del buffer
+  // Stats calculadas sobre datos fusionados
   const stats = useMemo(() => ({
-    completados: itinerarios.filter(i => i.estado === 'completado').length,
-    activos:     itinerarios.filter(i => i.estado === 'activo').length,
-    borradores:  itinerarios.filter(i => i.estado === 'borrador').length,
-  }), [itinerarios])
+    completados: itinerariosConEstado.filter(i => i.estado === 'completado').length,
+    activos: itinerariosConEstado.filter(i => i.estado === 'activo').length,
+    borradores: itinerariosConEstado.filter(i => i.estado === 'borrador').length,
+  }), [itinerariosConEstado])
+
+  // Callback del modal al cambiar estado
+  const handleEstadoChanged = useCallback((id, nuevoEstado) => {
+    setEstadosLocales(prev => ({ ...prev, [id]: nuevoEstado }))
+  }, [])
+
+  // Cambio de estado rápido inline (desde la fila)
+  const handleCambiarEstadoInline = useCallback(async (itinerario, nuevoEstado) => {
+    const estadoAnterior = estadosLocales[itinerario.id] ?? itinerario.estado
+    if (nuevoEstado === estadoAnterior) return
+    // Actualización optimista
+    setEstadosLocales(prev => ({ ...prev, [itinerario.id]: nuevoEstado }))
+    try {
+      await itinerarioService.actualizarEstado(itinerario.id, nuevoEstado)
+    } catch (err) {
+      // Revertir si falla
+      setEstadosLocales(prev => ({ ...prev, [itinerario.id]: estadoAnterior }))
+      console.error('Error actualizando estado:', err)
+    }
+  }, [estadosLocales])
 
   return (
     <div className="dash-page">
@@ -72,13 +120,13 @@ export default function Dashboard() {
           <Link to="/dashboard" className="dash-nav-item active">
             <FiTrendingUp /> Mi Panel
           </Link>
-          <Link to="/#destinos" className="dash-nav-item">
+          <Link to="/destinos" className="dash-nav-item">
             <FiMap /> Destinos
           </Link>
-          <Link to="/#precios" className="dash-nav-item">
+          <Link to="/" state={{ scrollTo: 'precios' }} className="dash-nav-item">
             <FiCalendar /> Planes
           </Link>
-          <Link to="/#contacto" className="dash-nav-item">
+          <Link to="/favoritos" className="dash-nav-item">
             <FiHeart /> Favoritos
           </Link>
         </nav>
@@ -114,7 +162,8 @@ export default function Dashboard() {
         <header className="dash-header">
           <div>
             <h1 className="dash-welcome">
-              Hola, <span className="text-gradient">{user.nombre}</span> 👋
+              Hola, <span className="text-gradient">{user.nombre}</span>{' '}
+              <FiSmile style={{ verticalAlign: 'middle', marginLeft: '4px' }} />
             </h1>
             <p className="dash-welcome-sub">Bienvenido a tu panel de viajes</p>
           </div>
@@ -127,13 +176,13 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Stats cards — calculadas desde la API */}
+        {/* Stats cards */}
         <div className="dash-stats">
           {[
-            { icon: '✈️', label: 'Mis itinerarios',   val: totalElements,       color: 'var(--primary-light)' },
-            { icon: '✅', label: 'Completados',        val: stats.completados,   color: '#10B981' },
-            { icon: '🗺️', label: 'Activos',            val: stats.activos,       color: '#F59E0B' },
-            { icon: '📝', label: 'En borrador',        val: stats.borradores,    color: '#818CF8' },
+            { icon: <FiSend />, label: 'Mis itinerarios', val: totalElements, color: 'var(--primary-light)' },
+            { icon: <FiCheckCircle />, label: 'Completados', val: stats.completados, color: '#10B981' },
+            { icon: <FiMapPin />, label: 'Activos', val: stats.activos, color: '#F59E0B' },
+            { icon: <FiFileText />, label: 'En borrador', val: stats.borradores, color: '#818CF8' },
           ].map(({ icon, label, val, color }) => (
             <div key={label} className="dash-stat-card card">
               <div className="dash-stat-icon" style={{ color }}>{icon}</div>
@@ -143,7 +192,7 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Lista de itinerarios con paginación buffer */}
+        {/* Lista de itinerarios */}
         <div className="dash-section-card card">
           <div className="dash-section-head">
             <h2>Mis itinerarios</h2>
@@ -154,8 +203,29 @@ export default function Dashboard() {
             </button>
           </div>
 
-          {/* Búsqueda dentro del buffer */}
-          <div className="dash-search-wrap">
+          {/* Filtros de estado (tabs) */}
+          <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+            {FILTROS.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setFiltroEstado(key)}
+                style={{
+                  padding: '0.3rem 0.8rem',
+                  borderRadius: '999px',
+                  fontSize: '0.78rem', fontWeight: filtroEstado === key ? 700 : 400,
+                  border: `1px solid ${filtroEstado === key ? 'var(--primary-light)' : 'rgba(255,255,255,0.1)'}`,
+                  background: filtroEstado === key ? 'rgba(91,79,232,0.15)' : 'rgba(255,255,255,0.03)',
+                  color: filtroEstado === key ? 'var(--primary-light)' : 'var(--text-muted)',
+                  cursor: 'pointer', transition: 'all 0.15s ease',
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Búsqueda */}
+          <div className="dash-search-wrap" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
             <FiSearch className="dash-search-icon" />
             <input
               type="text"
@@ -163,10 +233,32 @@ export default function Dashboard() {
               placeholder="Buscar por título, estado o destino..."
               value={busqueda}
               onChange={e => setBusqueda(e.target.value)}
+              style={busqueda ? { paddingRight: '2.5rem' } : undefined}
             />
             {busqueda && (
-              <button className="dash-search-clear"
-                onClick={() => setBusqueda('')}>✕</button>
+              <button
+                onClick={() => setBusqueda('')}
+                title="Limpiar búsqueda"
+                style={{
+                  position: 'absolute',
+                  right: '0.75rem',
+                  background: 'rgba(255,255,255,0.08)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 22,
+                  height: 22,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: 'var(--text-muted)',
+                  transition: 'background 0.15s, color 0.15s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; e.currentTarget.style.color = 'var(--text-primary)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'var(--text-muted)' }}
+              >
+                <FiX size={12} />
+              </button>
             )}
           </div>
 
@@ -180,39 +272,88 @@ export default function Dashboard() {
               </div>
             ) : itinerariosFiltrados.length > 0 ? (
               itinerariosFiltrados.map(v => {
-                const estadoStyle = ESTADO_COLOR[v.estado] || ESTADO_COLOR.borrador
+                const estadoActual = estadosLocales[v.id] ?? v.estado
+                const estadoMeta = ESTADO_META[estadoActual] || ESTADO_META.borrador
                 return (
-                  <div key={v.id} className="dash-viaje-item">
-                    <div className="dash-viaje-emoji">🗺️</div>
-                    <div className="dash-viaje-info">
+                  <div key={v.id} className="dash-viaje-item" style={{ alignItems: 'center', gap: '0.75rem' }}>
+                    <div className="dash-viaje-emoji" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <FiMapPin />
+                    </div>
+
+                    <div className="dash-viaje-info" style={{ flex: 1, minWidth: 0 }}>
                       <strong>{v.titulo}</strong>
                       <span>
                         {v.destino?.nombre || 'Destino'} ·{' '}
                         {v.fechaInicio} → {v.fechaFin}
                       </span>
                     </div>
-                    <div className="dash-viaje-estado"
-                      style={{ background: estadoStyle.bg, color: estadoStyle.color }}>
-                      {v.estado}
+
+                    {/* Selector de estado rápido inline */}
+                    <div style={{ position: 'relative', flexShrink: 0 }}>
+                      <select
+                        value={estadoActual}
+                        onChange={e => handleCambiarEstadoInline(v, e.target.value)}
+                        style={{
+                          appearance: 'none',
+                          background: estadoMeta.bg,
+                          color: estadoMeta.color,
+                          border: `1px solid ${estadoMeta.color}33`,
+                          borderRadius: '999px',
+                          padding: '0.28rem 1.8rem 0.28rem 0.75rem',
+                          fontSize: '0.73rem', fontWeight: 600,
+                          cursor: 'pointer',
+                          outline: 'none',
+                        }}
+                      >
+                        {ESTADOS_VALIDOS.map(e => (
+                          <option key={e} value={e}>{ESTADO_META[e].label}</option>
+                        ))}
+                      </select>
+                      <FiChevronDown size={11} style={{
+                        position: 'absolute', right: '0.55rem', top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: estadoMeta.color, pointerEvents: 'none',
+                      }} />
                     </div>
+
+                    {/* Botón Ver detalle */}
+                    <button
+                      onClick={() => setModalItem(v)}
+                      title="Ver detalle"
+                      style={{
+                        background: 'rgba(91,79,232,0.1)',
+                        border: '1px solid rgba(91,79,232,0.2)',
+                        color: 'var(--primary-light)',
+                        borderRadius: '8px',
+                        padding: '0.35rem 0.65rem',
+                        cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: '0.35rem',
+                        fontSize: '0.78rem', fontWeight: 600,
+                        transition: 'all 0.15s ease', flexShrink: 0,
+                      }}
+                    >
+                      <FiEye size={14} /> Detalle
+                    </button>
                   </div>
                 )
               })
             ) : (
               <div className="dash-empty">
-                <span>🔍</span>
+                <FiSearch size={32} style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }} />
                 <p>
                   {busqueda
                     ? `No se encontraron resultados para "${busqueda}"`
-                    : 'Aún no tienes itinerarios. ¡Empieza a planificar tu viaje!'
+                    : filtroEstado
+                      ? `No tienes itinerarios con estado "${ESTADO_META[filtroEstado]?.label}".`
+                      : 'Aún no tienes itinerarios. ¡Empieza a planificar tu viaje!'
                   }
                 </p>
               </div>
             )}
           </div>
 
-          {/* Paginación buffer */}
-          {!loading && !busqueda && (
+          {/* Paginación */}
+          {!loading && !busqueda && !filtroEstado && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
@@ -237,15 +378,26 @@ export default function Dashboard() {
             </div>
             <h3>¿Listo para tu próxima aventura?</h3>
             <p>Basado en tus viajes anteriores, Cusco, Perú podría ser tu próximo destino perfecto.</p>
-            <Link to="/#destinos" className="btn btn-primary"
+            <Link to="/destinos" className="btn btn-primary"
               style={{ marginTop: '1rem', display: 'inline-flex' }}>
               Ver destinos <FiArrowRight />
             </Link>
           </div>
-          <div className="dash-suggestion-emoji">🏔️</div>
+          <div className="dash-suggestion-emoji" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <FiGlobe size={48} />
+          </div>
         </div>
 
       </main>
+
+      {/* Modal de detalle */}
+      {modalItem && (
+        <ItinerarioDetalleModal
+          itinerario={{ ...modalItem, estado: estadosLocales[modalItem.id] ?? modalItem.estado }}
+          onClose={() => setModalItem(null)}
+          onEstadoChanged={handleEstadoChanged}
+        />
+      )}
     </div>
   )
 }

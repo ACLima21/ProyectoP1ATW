@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi'
 import Modal from './Modal'
@@ -27,6 +27,7 @@ export default function Contact() {
   const [apiError,   setApiError]   = useState('')
 
   const { user } = useAuth()
+  const navigate = useNavigate()
   const {
     setFormSubmitted,
     destinoSeleccionado, setDestinoSeleccionado,
@@ -167,13 +168,13 @@ export default function Contact() {
             <div className="contact-form" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
               <h3 style={{ marginBottom: '0.75rem' }}>Elige un destino para empezar</h3>
               <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                Selecciona "Ver ruta" en alguno de los destinos de arriba y
-                vuelve aquí para armar tu itinerario.
+                Elige un destino desde el listado completo, o selecciona
+                "Ver ruta" en cualquiera de los destacados de arriba.
               </p>
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => document.getElementById('destinos')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => navigate('/destinos')}
               >
                 Ver destinos
               </button>
@@ -192,14 +193,14 @@ export default function Contact() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setDestinoSeleccionado(null)}
+                  onClick={() => navigate('/destinos')}
                   style={{
                     marginLeft: '0.5rem', fontSize: '0.8rem', background: 'none',
                     border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
                     textDecoration: 'underline',
                   }}
                 >
-                  Cambiar
+                  Elegir otro destino
                 </button>
               </div>
 

@@ -1,0 +1,928 @@
+================================================================================
+                       UNIVERSIDAD DE LAS FUERZAS ARMADAS - ESPE
+            DEPARTAMENTO DE CIENCIAS DE LA COMPUTACIÓN
+             CARRERA DE INGENIERÍA EN SOFTWARE / TI
+================================================================================
+
+PROYECTO DE ASIGNATURA: DESARROLLO DE APLICACIONES WEB Y TECNOLOGÍAS WEB
+INFORME TÉCNICO COMPLETO DE ARQUITECTURA, IMPLEMENTACIÓN, INTEGRACIÓN Y SEGURIDAD FULL STACK
+
+SISTEMA: VOYAGEAI - PLATAFORMA INTEGRAL DE PLANIFICACIÓN DE VIAJES E ITINERARIOS INTELIGENTES
+
+ESTUDIANTE: ISMAEL LIMA
+SEMESTRE: QUINTO SEMESTRE
+PERÍODO ACADÉMICO: 2026 - P1 / ATW
+FECHA DE ENTREGA: 28 DE JULIO DE 2026
+
+================================================================================
+                                1. PORTADA INSTITUCIONAL
+================================================================================
+
+UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE
+SEDE SANGOLQUÍ - ECUADOR
+
+DEPARTAMENTO: Ciencias de la Computación
+CARRERA: Ingeniería en Software
+ASIGNATURA: Aplicaciones Web y Tecnologías Web (ATW)
+NIVEL: Quinto Semestre
+
+PROYECTO INTEGRAL DE SOFTWARE FULL STACK:
+"Diseño, Construcción y Migración de la Plataforma Web SPA VoyageAI hacia una Arquitectura Multicapa Desacoplada basada en Spring Boot 3, Spring Security 6 con JWT, JPA/Hibernate, PostgreSQL y React 25 con Vite"
+
+Docente: Equipo Docente ATW - ESPE
+Autor: Ismael Lima
+Estado del Entregable: Versión Final de Producción / Evaluación Académica
+
+================================================================================
+                                2. TÍTULO DEL PROYECTO
+================================================================================
+
+VoyageAI: Plataforma Web Full Stack para la Gestión, Planificación e Itinerarios Inteligentes de Viaje mediante Arquitectura de Microservicios RESTful con Spring Boot 3, Autenticación Basada en JWT, Persistencia Relacional en PostgreSQL e Interfaz React 25.
+
+================================================================================
+                                3. ÍNDICE GENERAL
+================================================================================
+
+1. Portada institucional
+2. Título del proyecto
+3. Índice general
+4. Índice de figuras
+5. Índice de tablas
+6. Introducción
+7. Descripción de la idea de negocio
+8. Antecedentes del proyecto trabajado
+9. Problema que resuelve
+10. Objetivo general
+11. Objetivos específicos
+12. Marco teórico
+    12.1. Aplicaciones Full Stack
+    12.2. Frontend
+    12.3. Backend
+    12.4. API REST
+    12.5. Protocolo HTTP y JSON
+    12.6. Spring Boot 3.4
+    12.7. Spring Security 6
+    12.8. PostgreSQL y Drivers JDBC
+    12.9. Hibernate ORM y Java Persistence API (JPA)
+    12.10. Operaciones CRUD (Create, Read, Update, Delete)
+    12.11. Data Transfer Object (DTO Pattern)
+    12.12. Repository Pattern
+    12.13. Arquitectura en Capas (Layered Architecture)
+    12.14. JSON Web Token (JWT)
+    12.15. Manejo de Sesión en Cliente vs Servidor
+    12.16. Mecanismos de Autenticación y Autorización
+    12.17. Encriptación BCrypt
+    12.18. Cross-Origin Resource Sharing (CORS)
+    12.19. Documentación Interactiva OpenAPI / Swagger
+    20. Variables de Entorno (.env)
+    12.21. Guards y Componentes de Protección de Rutas
+    12.22. Protected Routes (Rutas Privadas)
+    12.23. Eliminación Lógica (Soft Delete)
+    12.24. Paginación de Datos y Buffering
+    12.25. Control de Versiones con Git y GitHub
+13. Metodología de Desarrollo
+14. Arquitectura General del Sistema
+    14.1. Visión Holística del Flujo Multicapa
+    14.2. Desglose del Pipeline de Comunicación
+15. Base de Datos Relacional (PostgreSQL)
+    15.1. Entidades y Esquema Físico
+    15.2. Relaciones, Claves Primarias y Foráneas
+    15.3. Restricciones de Integridad e Índices
+    15.4. Estrategia de Eliminación Lógica y Paginación
+16. Backend (Spring Boot 3.4 API REST)
+    16.1. Controladores REST (Controllers)
+    16.2. Servicios de Negocio (Services)
+    16.3. Repositorios de Datos (JPA Repositories)
+    16.4. Entidades del Dominio (Entities)
+    16.5. Objetos de Transferencia de Datos (DTOs)
+    16.6. Módulo de Seguridad JWT (Security & Filters)
+    16.7. Manejo Centralizado de Excepciones
+    16.8. Configuración Swagger / OpenAPI
+    16.9. Sistema de Logs e Inspección
+    16.10. Validaciones y CORS
+17. Frontend (React 25 + Vite SPA)
+    17.1. Vista y Pantallas Principales
+    17.2. Componentes Reutilizables
+    17.3. Custom Hooks
+    17.4. Servicios HTTP (API Layer)
+    17.5. Manejo de Estado Global (Context API)
+    17.6. Enrutamiento y Route Guards
+    17.7. Formularios, Búsquedas y Filtros Optimistas
+18. Integración Frontend - Backend
+    18.1. Evolución Arquitectónica (Antes JSON Mock vs Ahora API REST)
+    18.2. Fragmentos de Código de Transición
+19. Sistema de Seguridad y Control de Accesos
+    19.1. Flujo Completo de Token JWT
+    19.2. Roles y Permisos (ADMIN vs USUARIO)
+    19.3. Protección en Frontend y Backend
+20. Flujos Detallados de Negocio
+    20.1. Flujo de Autenticación (Login)
+    20.2. Flujo de Consulta Paginada
+    20.3. Flujo de Registro de Usuario
+    20.4. Flujo de Actualización de Estado / Plan
+    20.5. Flujo de Eliminación Lógica
+21. Plan de Pruebas y Validación
+22. Evidencias e Instrucciones para Capturas de Pantalla (Figuras)
+23. Figuras Obligatorias y Adicionales
+24. Diagramas Técnicos y Guías de Construcción
+25. Preguntas Clave del Informe
+    25.1. Evolución del Proyecto
+    25.2. Flujo de Login
+    25.3. CRUD Completo
+    25.4. Seguridad
+    25.5. Problemas Encontrados y Soluciones
+26. Conclusiones Técnicas
+27. Recomendaciones
+28. Bibliografía (Normas APA 7 - Fuentes Oficiales)
+29. Anexos Técnicos
+    29.1. Árbol Estructural del Repositorio
+    29.2. Matriz de Endpoints API REST
+    29.3. Resumen de Tablas SQL
+
+================================================================================
+                                4. ÍNDICE DE FIGURAS
+================================================================================
+
+Figura 1. Proyecto frontend trabajado previamente (Mock JSON local).
+Figura 2. Backend Spring Boot ejecutándose en puerto 8080.
+Figura 3. Documentación interactiva Swagger UI mostrando los endpoints API REST.
+Figura 4. Cliente PostgreSQL mostrando la estructura de tablas relacionales.
+Figura 5. Pantalla de inicio de sesión (Login) con validación de entradas.
+Figura 6. Inicio de sesión exitoso con redirección a Dashboard y almacenamiento de JWT.
+Figura 7. Intento de acceso a ruta protegida bloqueado por AuthGuard.
+Figura 8. Panel principal (Dashboard) del usuario autenticado.
+Figura 9. Listado paginado de destinos con amortiguación (useBufferedPagination).
+Figura 10. Formulario de registro de nuevos usuarios con validación sintáctica.
+Figura 11. Registro de nuevo usuario almacenado en la tabla 'usuarios' de PostgreSQL.
+Figura 12. Modal de detalle y edición de itinerario / cambio de plan de usuario.
+Figura 13. Confirmación visual de registro actualizado en la interfaz.
+Figura 14. Ejecución de eliminación lógica en la tabla 'destinos'.
+Figura 15. Consulta SQL ejecutada en PostgreSQL confirmando 'activo = false'.
+Figura 16. Repositorio de código en GitHub con la estructura del proyecto.
+Figura 17. Vista dedicada de Destinos con corazones optimistas de Favoritos.
+Figura 18. Vista dedicada de Mis Favoritos (/favoritos) paginada.
+
+================================================================================
+                                5. ÍNDICE DE TABLAS
+================================================================================
+
+Tabla 1. Matriz de Tecnologías y Versiones del Ecosistema Full Stack.
+Tabla 2. Mapeo de Entidades JPA vs Tablas Relacionales en PostgreSQL.
+Tabla 3. Matriz de Endpoints REST, Métodos HTTP y Niveles de Autorización.
+Tabla 4. Estructura de Roles de Usuario y Privilegios en el Sistema.
+Tabla 5. Matriz de Componentes Frontend React y sus Responsabilidades.
+
+================================================================================
+                                6. INTRODUCCIÓN
+================================================================================
+
+El desarrollo de soluciones informáticas modernas requiere la transición de arquitecturas monolíticas o prototipos de cliente hacia aplicaciones web desacopladas de alto rendimiento. El presente informe técnico documenta en profundidad el proceso de diseño, refactorización, migración e implementación de la plataforma "VoyageAI".
+
+VoyageAI nació originalmente como una Single Page Application (SPA) en el lado del cliente que consumía estructuras de datos estáticas en formato JSON. En esta fase de desarrollo integral, la aplicación ha evolucionado hacia un ecosistema Full Stack profesional compuesto por:
+
+1. Un Backend robusto desarrollado en Java 21 sobre el framework Spring Boot 3.4.5, utilizando Spring Security 6 para el control de accesos stateless mediante tokens criptográficos JWT (JSON Web Tokens), JPA/Hibernate para el mapeo objeto-relacional y PostgreSQL como motor de base de datos relacional.
+2. Un Frontend moderno construido con React 25 y empacado mediante Vite 8, estructurado bajo una arquitectura de componentes modulares, Custom Hooks avanzados para la paginación con buffer (`useBufferedPagination`), Context API para el estado global de autenticación (`AuthContext`), fluidez en el flujo (`FlowContext`) y tema (`ThemeContext`), e iconografía vectorial SVG mediante `react-icons`.
+
+El sistema resuelve la problemática de la planificación dispersa de viajes, proporcionando a los usuarios itinerarios personalizados, gestión de destinos favoritos con actualización optimista de interfaz, itinerarios detallados por día con generación de resúmenes mediante IA (integración con el modelo Ollama), y administración centralizada con control de roles por usuario y administrador.
+
+================================================================================
+                      7. DESCRIPCIÓN DE LA IDEA DE NEGOCIO
+================================================================================
+
+VoyageAI es una plataforma digital SaaS (Software as a Service) orientada al sector de la tecnología aplicada al turismo (TravelTech). La propuesta de valor radica en democratizar y agilizar la experiencia de planificación de viajes. 
+
+A través de la plataforma, un usuario puede:
+- Explorar un amplio catálogo de destinos turísticos internacionales con detalles de precios bases y ubicación.
+- Marcar sus destinos favoritos con interacción optimista instantánea sin recargas de página.
+- Crear itinerarios de viaje estructurados por días, definiendo presupuestos, cantidad de personas, fechas y actividades individuales (turismo, comida, hospedaje, transporte).
+- Solicitar la redacción de resúmenes de viaje mediante algoritmos de inteligencia artificial.
+- Seleccionar y actualizar planes de suscripción (Free, Traveler, Explorer, VIP) para desbloquear beneficios exclusivos dentro de la plataforma.
+
+Para los administradores, VoyageAI ofrece un panel de control operativo (`AdminPanel.jsx`) que permite gestionar destinos (creación, edición, activación y eliminación lógica), monitorear usuarios y supervisar métricas globales del sistema.
+
+================================================================================
+                   8. ANTECEDENTES DEL PROYECTO TRABAJADO
+================================================================================
+
+El proyecto inició en fases académicas previas como una interfaz gráfica estática desarrollada en React. En dicho estado inicial:
+- Los usuarios eran simulados leyendo directamente el archivo estático `voyageai/src/data/usuarios.json`.
+- Los destinos se obtenían importando `voyageai/src/data/destinos.json`.
+- La persistencia de sesión era simulada únicamente mediante llaves en `localStorage`.
+- No existía un servidor de base de datos real ni un mecanismo de encriptación de claves de acceso; las contraseñas se guardaban en texto plano en archivos JSON local.
+- Las operaciones de creación o eliminación se perdían al refrescar la memoria del navegador o no se sincronizaban entre múltiples usuarios.
+
+La presente versión elimina completamente la dependencia de datos simulados para dar paso a una arquitectura cliente-servidor real, donde el frontend consume la API REST securizada de Spring Boot conectada a una base de datos PostgreSQL de producción.
+
+================================================================================
+                           9. PROBLEMA QUE RESUELVE
+================================================================================
+
+La planificación tradicional de viajes genera frustración debido a la dispersión de información en múltiples sitios web de reserva, la falta de transparencia en presupuestos y la dificultad para organizar actividades por días.
+
+VoyageAI resuelve esto mediante:
+1. Centralización de Destinos e Itinerarios: Reúne catálogo, cotizaciones iniciales y cronogramas en una sola plataforma.
+2. Inseguridad y Falta de Privacidad: Protege la información privada de los viajes utilizando cifrado de contraseñas con BCrypt, autenticación mediante tokens JWT firmados con algoritmos HMAC-SHA y validación de propiedad en el backend.
+3. Desempeño y Experiencia de Usuario Lenta: Elimina los tiempos de espera prolongados en la interfaz mediante paginación con buffer en cliente (`useBufferedPagination`) e interacción optimista en acciones como el marcado de favoritos.
+
+================================================================================
+                         10. OBJETIVO GENERAL
+================================================================================
+
+Construir e integrar una plataforma web Full Stack escalable, segura y de alto rendimiento para la gestión de destinos e itinerarios de viaje llamada VoyageAI, implementando una arquitectura distribuida con backend Spring Boot 3, persistencia relacional en PostgreSQL y frontend reactivo en React 25 con Vite, garantizando el cumplimiento de estándares de seguridad OWASP mediante Spring Security y JWT.
+
+================================================================================
+                        11. OBJETIVOS ESPECÍFICOS
+================================================================================
+
+1. Diseñar e implementar el modelo de base de datos relacional en PostgreSQL, definiendo entidades como Usuario, Destino, Favorito, Itinerario, ItinerarioActividad, Resena, Reserva y PlanSuscripcion con sus respectivas claves primarias, foráneas e índices.
+2. Desarrollar una API RESTful securizada en Spring Boot 3.4 que exponga endpoints para autenticación, gestión de destinos con eliminación lógica, favoritos del usuario, administración de itinerarios y planes de suscripción.
+3. Implementar un módulo de seguridad stateless basado en Spring Security 6 y JWT, que incluya encriptación de contraseñas con BCrypt, filtros de interceptación de peticiones HTTP (`JwtAuthenticationFilter`) y control de acceso basado en roles (`ROLE_ADMIN`, `ROLE_USUARIO`).
+4. Refactorizar el frontend React 25 desacoplando los archivos JSON simulados e integrando un cliente HTTP centralizado (`services/api.js`) que envíe encabezados `Authorization: Bearer <token>`.
+5. Desarrollar componentes interactivos en la interfaz como el modal de detalles de itinerario con cronograma por días (`ItinerarioDetalleModal.jsx`), vista dedicada de favoritos (`Favoritos.jsx`) y selectores de estado optimistas.
+6. Documentar la API REST utilizando OpenAPI 3 y Swagger UI para facilitar la validación y pruebas de integración.
+
+================================================================================
+                          12. MARCO TEÓRICO
+================================================================================
+
+12.1. APLICACIONES FULL STACK
+Una aplicación Full Stack comprende la integración completa de la capa de presentación (Frontend), la capa de lógica de negocio (Backend) y la capa de almacenamiento de datos (Base de Datos). En VoyageAI, la separación es total: el frontend se ejecuta de manera independiente en el navegador cliente, mientras que el backend corre sobre la JVM en un servidor web Tomcat embebido.
+
+12.2. FRONTEND
+El Frontend representa la interfaz gráfica con la que interactúa el usuario final. En VoyageAI se utiliza React 25, una biblioteca basada en JavaScript/JSX que utiliza el concepto de Virtual DOM para actualizar de forma eficiente únicamente los nodos HTML que sufren cambios de estado.
+
+12.3. BACKEND
+El Backend procesa las reglas de negocio, autoriza el acceso a los recursos y gestiona las transacciones con la base de datos. Se utiliza Java 21 con Spring Boot 3.4.5, aprovechando su ecosistema de inyección de dependencias (`@Autowired`) y gestión de ciclo de vida de beans.
+
+12.4. API REST
+Una API REST (Representational State Transfer) es un estilo arquitectónico para sistemas distribuidos basado en el protocolo HTTP. Utiliza verbos estándar: GET (lectura), POST (creación), PUT/PATCH (actualización parcial/total) y DELETE (eliminación). En VoyageAI, todos los controladores (`DestinoController`, `FavoritoController`, etc.) siguen las convenciones REST retornando respuestas codificadas en formato JSON con estados HTTP estándar (200 OK, 201 Created, 401 Unauthorized, 403 Forbidden, 404 Not Found).
+
+12.5. PROTOCOLO HTTP Y JSON
+HTTP (Hypertext Transfer Protocol) es el protocolo de aplicación sin estado utilizado para el intercambio de mensajes en la web. JSON (JavaScript Object Notation) es el formato ligero de intercambio de datos utilizado de forma universal entre el frontend React y el backend Spring Boot.
+
+12.6. SPRING BOOT 3.4
+Framework basado en Java que simplifica la creación de aplicaciones Spring autónomas y listas para producción. Incluye un servidor web Tomcat embebido y autoconfiguración inteligente de componentes como DataSource, JPA y Transaction Management.
+
+12.7. SPRING SECURITY 6
+Módulo de Spring especializado en autenticación y autorización. En VoyageAI se configura mediante la clase `SecurityConfig.java`, estableciendo una política de gestión de sesiones `SessionCreationPolicy.STATELESS` y deshabilitando el mecanismo CSRF por tratarse de una API REST basada en tokens Bearer.
+
+12.8. POSTGRESQL Y DRIVERS JDBC
+PostgreSQL es un sistema de gestión de bases de datos relacional orientado a objetos de código abierto conocido por su fiabilidad y cumplimiento ACID. La conexión desde Spring Boot se realiza mediante el driver `org.postgresql.Driver` y el pool de conexiones HikariCP (`spring.datasource.hikari`).
+
+12.9. HIBERNATE ORM Y JPA
+JPA (Java Persistence API) es la especificación estándar de Java para la persistencia de datos relacionales. Hibernate es el proveedor ORM (Object-Relational Mapping) utilizado por Spring Data JPA para transformar filas de la base de datos en instancias de clases Java `@Entity`.
+
+12.10. OPERACIONES CRUD
+Acrónimo de Create, Read, Update, Delete. Constituye el conjunto básico de operaciones sobre cualquier entidad del sistema. En VoyageAI, entidades como `Destino` e `Itinerario` implementan un CRUD completo respaldado por interfaces que extienden de `JpaRepository`.
+
+12.11. DATA TRANSFER OBJECT (DTO PATTERN)
+Patrón de diseño utilizado para transferir datos entre capas sin exponer la estructura interna de las entidades del dominio JPA. Ejemplos en VoyageAI: `LoginRequest.java`, `ItinerarioCompletoRequest.java`, `MensajeResponse.java`.
+
+12.12. REPOSITORY PATTERN
+Patrón que encapsula la lógica de acceso a datos aislando el código de dominio de la infraestructura de almacenamiento. Spring Data JPA permite definir repositorios creando interfaces simples como `UsuarioRepository extends JpaRepository<Usuario, Long>`.
+
+12.13. ARQUITECTURA EN CAPAS (LAYERED ARCHITECTURE)
+Organización del software en niveles jerárquicos independientes:
+- Capa de Presentación: Controladores REST (`@RestController`).
+- Capa de Servicio: Lógica de negocio y transacciones (`@Service`).
+- Capa de Acceso a Datos: Repositorios JPA (`@Repository`).
+- Capa de Dominio: Entidades JPA (`@Entity`).
+
+12.14. JSON WEB TOKEN (JWT)
+Estándar abierto (RFC 7519) para la transmisión segura de aseveraciones entre partes como un objeto JSON. Consta de tres partes separadas por puntos: Header, Payload y Signature. En VoyageAI, la clase `JwtUtil.java` genera tokens con el correo y rol del usuario, firmados mediante una clave secreta HMAC (`JWT_SECRET`).
+
+12.15. MANEJO DE SESIÓN EN CLIENTE VS SERVIDOR
+A diferencia del esquema tradicional basado en JSESSIONID y sesiones en memoria del servidor, VoyageAI utiliza un esquema Stateless. El servidor no almacena la sesión; cada petición HTTP entrante incluye el token en el encabezado `Authorization: Bearer <token>`, el cual es validado por `JwtAuthenticationFilter.java`.
+
+12.16. MECANISMOS DE AUTENTICACIÓN Y AUTORIZACIÓN
+- Autenticación: Proceso de verificar la identidad de un usuario (validar correo y contraseña en `AuthController.java`).
+- Autorización: Proceso de determinar si el usuario autenticado posee privilegios para ejecutar una acción (validar rol `ROLE_ADMIN` en `SecurityConfig.java` o verificar propiedad de un recurso en `ItinerarioService.java`).
+
+12.17. ENCRIPTACIÓN BCRYPT
+Algoritmo de hashing de contraseñas de una sola vía que incorpora un "salero" (salt) aleatorio para protegerse contra ataques de tablas arcoíris. En VoyageAI se utiliza `BCryptPasswordEncoder` para hashear las claves de los usuarios antes de guardarlas en la base de datos PostgreSQL.
+
+12.18. CROSS-ORIGIN RESOURCE SHARING (CORS)
+Mecanismo de seguridad de los navegadores web que restringe peticiones HTTP originadas desde un dominio o puerto distinto al del servidor. En `SecurityConfig.java` se habilita explícitamente CORS permitiendo peticiones desde `http://localhost:5173` (Vite) hacia `http://localhost:8080/api`.
+
+12.19. DOCUMENTACIÓN INTERACTIVA OPENAPI / SWAGGER
+Herramienta que genera automáticamente documentación web e interfaces de prueba interactivas para APIs REST. En VoyageAI se configura mediante `springdoc-openapi-starter-webmvc-ui` accesible en `/swagger-ui.html`.
+
+12.20. VARIABLES DE ENTORNO (.ENV)
+Archivos de configuración que mantienen sensibles de infraestructura (claves de BD, secretos de JWT, contraseñas de administrador) fuera del código fuente. Se utiliza `dotenv-java` en backend y `import.meta.env` en Vite.
+
+12.21. GUARDS Y COMPONENTES DE PROTECCIÓN DE RUTAS
+Componentes de envoltura en React (`AuthGuard.jsx`, `GuestGuard.jsx`, `StepGuard.jsx`) que evalúan la presencia del token de usuario antes de renderizar la vista solicitada.
+
+12.22. PROTECTED ROUTES (RUTAS PRIVADAS)
+Rutas del frontend que requieren autenticación previa para ser accedidas, como `/dashboard`, `/admin` y `/favoritos`.
+
+12.23. ELIMINACIÓN LÓGICA (SOFT DELETE)
+Técnica donde un registro no es borrado físicamente con un comando SQL `DELETE`, sino que se actualiza una bandera booleana (`activo = false`). Implementado en la entidad `Destino` de VoyageAI para preservar la integridad referencial con itinerarios y reservas históricas.
+
+12.24. PAGINACIÓN DE DATOS Y BUFFERING
+Mecanismo para dividir grandes conjuntos de datos en bloques (páginas). En el backend se implementa mediante `Pageable` y `Page<T>` de Spring Data JPA. En el frontend se implementa el custom hook `useBufferedPagination.js` que precarga lotes de 150 registros en memoria para garantizar navegación instantánea.
+
+12.25. CONTROL DE VERSIONES CON GIT Y GITHUB
+Sistema distribuido de control de versiones utilizado para rastrear cambios en el código fuente del proyecto y sincronizarlos con un repositorio remoto en GitHub.
+
+================================================================================
+                           13. METODOLOGÍA
+================================================================================
+
+El desarrollo de VoyageAI siguió una metodología de desarrollo ágil basada en iteraciones incrementales:
+
+- Fase 1: Análisis de Requisitos y Diseño de Arquitectura Relacional.
+- Fase 2: Construcción del Dominio Backend y Persistencia en PostgreSQL.
+- Fase 3: Implementación de la Capa de Seguridad Spring Security con JWT.
+- Fase 4: Refactorización y Conexión del Frontend React 25 eliminando la dependencia de mocks JSON.
+- Fase 5: Desarrollo de Funcionalidades Avanzadas (Favoritos optimistas, modal de detalle de itinerarios por día, resúmenes IA con Ollama).
+- Fase 6: Pruebas de Integración, Compilación Final y Documentación.
+
+================================================================================
+                    14. ARQUITECTURA GENERAL DEL SISTEMA
+================================================================================
+
+14.1. VISIÓN HOLÍSTICA DEL FLUJO MULTICAPA
+
+El sistema opera bajo un modelo desacoplado de cliente-servidor:
+
++-------------------------------------------------------------------------+
+|                           CLIENTE (BROWSER)                             |
+|  React 25 SPA + Vite 8 (Puerto 5173)                                    |
+|  - Componentes UI (Destinos, Favoritos, Dashboard, AdminPanel)           |
+|  - Custom Hooks (useBufferedPagination)                                 |
+|  - AuthContext (Estado JWT en localStorage)                             |
+|  - Cliente HTTP Centralizado (services/api.js)                          |
++-------------------------------------------------------------------------+
+                                     |
+                                     | Peticiones HTTP/REST (JSON)
+                                     | Header Authorization: Bearer <JWT>
+                                     v
++-------------------------------------------------------------------------+
+|                           BACKEND (SERVER)                              |
+|  Spring Boot 3.4.5 (Puerto 8080)                                        |
+|                                                                         |
+|  [Spring Security 6 Filter Chain]                                       |
+|  JwtAuthenticationFilter -> Extrae correo del JWT -> Carga UserDetails  |
+|                                     |                                   |
+|                                     v                                   |
+|  [Capa Controller] (@RestController)                                    |
+|  AuthController, DestinoController, FavoritoController, etc.            |
+|                                     |                                   |
+|                                     v                                   |
+|  [Capa Service] (@Service)                                              |
+|  UsuarioService, DestinoService, FavoritoService, ItinerarioService     |
+|                                     |                                   |
+|                                     v                                   |
+|  [Capa Repository] (@Repository / Spring Data JPA)                      |
+|  UsuarioRepository, DestinoRepository, FavoritoRepository, etc.         |
++-------------------------------------------------------------------------+
+                                     |
+                                     | Driver JDBC PostgreSQL (HikariCP)
+                                     v
++-------------------------------------------------------------------------+
+|                        BASE DE DATOS RELACIONAL                         |
+|  PostgreSQL (Puerto 5432)                                               |
+|  Tablas: usuarios, destinos, favoritos, itinerarios, etc.               |
++-------------------------------------------------------------------------+
+
+================================================================================
+                    15. BASE DE DATOS RELACIONAL (POSTGRESQL)
+================================================================================
+
+15.1. ENTIDADES Y ESQUEMA FÍSICO
+
+El esquema relacional de VoyageAI se compone de 8 tablas principales gestionadas en PostgreSQL:
+
+1. `usuarios`: Almacena las cuentas de usuario de la plataforma.
+   - `id`: BIGSERIAL PRIMARY KEY.
+   - `nombre`: VARCHAR(100) NOT NULL.
+   - `correo`: VARCHAR(150) UNIQUE NOT NULL.
+   - `password`: VARCHAR(255) NOT NULL (Hash BCrypt).
+   - `rol`: VARCHAR(30) NOT NULL (Valores: 'administrador', 'usuario').
+   - `avatar`: VARCHAR(10).
+   - `plan_suscripcion_id`: BIGINT REFERENCES plan_suscripcion(id).
+   - `activo`: BOOLEAN DEFAULT true.
+   - `fecha_registro`: TIMESTAMPTZ.
+
+2. `destinos`: Almacena el catálogo de destinos turísticos.
+   - `id`: BIGSERIAL PRIMARY KEY.
+   - `nombre`: VARCHAR(150) NOT NULL.
+   - `descripcion`: TEXT.
+   - `pais`: VARCHAR(100) NOT NULL.
+   - `ciudad`: VARCHAR(100).
+   - `continente`: VARCHAR(50).
+   - `precio_desde`: NUMERIC(10,2) CHECK (precio_desde >= 0).
+   - `imagen_url`: VARCHAR(500).
+   - `activo`: BOOLEAN DEFAULT true (Soporte para Eliminación Lógica).
+   - `fecha_creacion`: TIMESTAMPTZ.
+
+3. `favoritos`: Tabla de asociación compuesta que implementa la relación M:N entre usuarios y destinos favoritos.
+   - `usuario_id`: BIGINT REFERENCES usuarios(id) ON DELETE CASCADE.
+   - `destino_id`: BIGINT REFERENCES destinos(id) ON DELETE CASCADE.
+   - `fecha_agregado`: TIMESTAMPTZ.
+   - PRIMARY KEY (`usuario_id`, `destino_id`).
+
+4. `itinerarios`: Almacena la cabecera de los planes de viaje de los usuarios.
+   - `id`: BIGSERIAL PRIMARY KEY.
+   - `usuario_id`: BIGINT NOT NULL REFERENCES usuarios(id).
+   - `destino_id`: BIGINT NOT NULL REFERENCES destinos(id).
+   - `titulo`: VARCHAR(200) NOT NULL.
+   - `fecha_inicio`: DATE NOT NULL.
+   - `fecha_fin`: DATE NOT NULL.
+   - `num_personas`: INT DEFAULT 1 CHECK (num_personas > 0).
+   - `presupuesto_total`: NUMERIC(12,2).
+   - `moneda`: VARCHAR(10) DEFAULT 'USD'.
+   - `estado`: VARCHAR(30) DEFAULT 'borrador' (Valores: 'borrador', 'activo', 'completado', 'cancelado').
+   - `resumen_ia`: TEXT.
+   - `generado_por_ia`: BOOLEAN DEFAULT false.
+   - `notas`: TEXT.
+   - `fecha_creacion`: TIMESTAMPTZ.
+
+5. `itinerario_actividades`: Almacena el detalle de las actividades planificadas por día dentro de un itinerario.
+   - `id`: BIGSERIAL PRIMARY KEY.
+   - `itinerario_id`: BIGINT NOT NULL REFERENCES itinerarios(id) ON DELETE CASCADE.
+   - `dia_numero`: INT NOT NULL CHECK (dia_numero > 0).
+   - `orden`: INT DEFAULT 1.
+   - `hora_inicio`: TIME.
+   - `hora_fin`: TIME.
+   - `titulo`: VARCHAR(200) NOT NULL.
+   - `descripcion`: TEXT.
+   - `tipo`: VARCHAR(50) DEFAULT 'turismo' (Valores: 'turismo', 'comida', 'hospedaje', 'transporte').
+   - `lugar`: VARCHAR(200).
+   - `costo_estimado`: NUMERIC(10,2) DEFAULT 0.00.
+   - `moneda`: VARCHAR(10) DEFAULT 'USD'.
+
+6. `plan_suscripcion`: Almacena los tipos de suscripción de la plataforma.
+   - `id`: BIGSERIAL PRIMARY KEY.
+   - `nombre`: VARCHAR(50) UNIQUE NOT NULL (Valores: 'Free', 'Traveler', 'Explorer', 'VIP').
+   - `precio_mensual`: NUMERIC(8,2) NOT NULL.
+   - `max_itinerarios`: INT NOT NULL.
+   - `acceso_ia`: BOOLEAN DEFAULT false.
+   - `soporte_prioritario`: BOOLEAN DEFAULT false.
+   - `activo`: BOOLEAN DEFAULT true.
+
+7. `resenas`: Almacena las opiniones y calificaciones de los usuarios sobre destinos.
+   - `id`: BIGSERIAL PRIMARY KEY.
+   - `usuario_id`: BIGINT NOT NULL REFERENCES usuarios(id).
+   - `destino_id`: BIGINT NOT NULL REFERENCES destinos(id).
+   - `calificacion`: INT CHECK (calificacion BETWEEN 1 AND 5).
+   - `comentario`: TEXT.
+   - `fecha`: TIMESTAMPTZ.
+
+8. `reservas`: Almacena las reservas formales asociadas a itinerarios.
+   - `id`: BIGSERIAL PRIMARY KEY.
+   - `usuario_id`: BIGINT NOT NULL REFERENCES usuarios(id).
+   - `itinerario_id`: BIGINT NOT NULL REFERENCES itinerarios(id).
+   - `monto_total`: NUMERIC(12,2) NOT NULL.
+   - `estado`: VARCHAR(30) DEFAULT 'pendiente'.
+   - `fecha_reserva`: TIMESTAMPTZ.
+
+15.2. RESTRICCIONES DE INTEGRIDAD Y ELIMINACIÓN LÓGICA
+- La tabla `destinos` implementa eliminación lógica mediante el campo `activo BOOLEAN`. Al ejecutar la desactivación de un destino, no se elimina la fila en PostgreSQL, previniendo fallos por Foreign Key en itinerarios o reservas existentes.
+- La tabla `favoritos` utiliza una clave primaria compuesta mediante la clase `@EmbeddedId FavoritoId`, garantizando que un usuario no pueda duplicar el mismo destino como favorito.
+
+================================================================================
+                 16. BACKEND (SPRING BOOT 3.4 API REST)
+================================================================================
+
+El backend de VoyageAI está organizado bajo la estructura de paquetes `com.voyageai.backend`:
+
+16.1. CONTROLADORES REST (`controller/`)
+- `AuthController.java`: Expone `/api/auth/login` y `/api/auth/registro`. Procesa la autenticación y emisión de JWT.
+- `DestinoController.java`: Expone `/api/destinos` (CRUD de destinos, búsquedas paginadas, destinos activos y carousel).
+- `FavoritoController.java`: Expone `/api/favoritos` (Obtención de lista paginada de favoritos, IDs de favoritos del usuario, `POST /{destinoId}` y `DELETE /{destinoId}`).
+- `ItinerarioController.java`: Expone `/api/itinerarios` (Listado general, itinerarios del usuario autenticado, creación transaccional completa con actividades `/completo`, actualización de estado `/estado` y generación de resumen IA con Ollama `/resumen-ia`).
+- `UsuarioController.java`: Expone `/api/usuarios` (Gestión de usuarios y actualización de plan de suscripción `/me/plan`).
+- `PlanSuscripcionController.java`: Expone `/api/planes` (Consulta de planes).
+- `ResenaController.java` y `ReservaController.java`: Controladores para calificaciones y reservas.
+
+16.2. SERVICIOS DE NEGOCIO (`service/`)
+- `FavoritoService.java`: Resuelve la identidad del usuario desde el `SecurityContextHolder`, consulta la relación de favoritos y ejecuta inserciones/eliminaciones transaccionales.
+- `ItinerarioService.java`: Implementa la creación transaccional `@Transactional` de itinerarios y sus actividades asociadas. Incluye validaciones de propiedad (`verificarPropietarioOAdmin`) para garantizar que un usuario no pueda alterar itinerarios ajenos.
+- `DestinoService.java`: Gestiona el catálogo de destinos y ejecuta la eliminación lógica actualizando la bandera `activo`.
+- `UsuarioService.java`: Gestiona el registro de usuarios encubriendo la contraseña con `BCryptPasswordEncoder`.
+- `OllamaService.java`: Servicio de integración con Inteligencia Artificial local que invoca modelos LLM a través de HTTP en el puerto 11434 para redactar resúmenes descriptivos de viajes.
+
+16.3. REPOSITORIOS JPA (`repository/`)
+- `UsuarioRepository.java`: Incluye consultas como `findByCorreo(String correo)` y `existsByCorreo(String correo)`.
+- `FavoritoRepository.java`: Incluye consultas derivadas como `findByIdUsuarioId(Long usuarioId)` y la consulta paginada `findByIdUsuarioId(Long usuarioId, Pageable pageable)`.
+- `DestinoRepository.java`: Consultas paginadas por estado activo (`findByActivo(Boolean activo, Pageable pageable)`).
+- `ItinerarioRepository.java` e `ItinerarioActividadRepository.java`.
+
+16.4. MANEJO CENTRALIZADO DE EXCEPCIONES (`exception/`)
+- `GlobalExceptionHandler.java`: Captura excepciones globales del sistema mediante `@RestControllerAdvice`:
+  - `ResourceNotFoundException`: Retorna estado HTTP 404 Not Found.
+  - `BusinessException`: Retorna estado HTTP 400 Bad Request con mensaje descriptivo de la regla de negocio violada.
+  - `MethodArgumentNotValidException`: Retorna estado HTTP 400 con un mapa de errores de validación por campo.
+
+================================================================================
+                    17. FRONTEND (REACT 25 + VITE SPA)
+================================================================================
+
+El cliente web de VoyageAI está construido sobre React 25 y organizado dentro de `voyageai/src/`:
+
+17.1. VISTAS PRINCIPALES (`pages/`)
+- `Dashboard.jsx`: Vista privada del usuario. Muestra tarjetas de estadísticas, barra de búsqueda con botón de limpieza optimizado (`FiX`), tabs de filtrado por estado (Todos, Activos, Borrador, Completados, Cancelados), selector de estado inline y botón de apertura del modal de detalles.
+- `Destinos.jsx`: Vista de catálogo completo con paginación buffer y botón de corazón `FiHeart` para marcar/desmarcar favoritos de forma optimista instantánea.
+- `Favoritos.jsx`: Vista privada dedicada (`/favoritos`) que consulta `GET /api/favoritos` y muestra exclusivamente los destinos guardados por el usuario autenticado con eliminación fluida sin saltos de scroll.
+- `Login.jsx` y `Registro.jsx`: Formularios de autenticación con validación sintáctica en tiempo real y comunicación con la API REST.
+- `AdminPanel.jsx`: Vista exclusiva para administradores que permite crear, editar y aplicar eliminación lógica sobre el catálogo de destinos.
+- `Confirmacion.jsx`: Vista de confirmación de formulario protegida por `StepGuard`.
+
+17.2. CUSTOM HOOKS (`hooks/`)
+- `useBufferedPagination.js`: Hook avanzado de paginación que solicita un lote inicial de 150 registros al backend y realiza prefetch silencioso cuando restan menos de 50 registros por consumir en el cliente, logrando que la paginación sea imperceptible sin spinners intermedios.
+- `useScrollReveal.js` y `useScrollSpy.js`: Controlan la animación de scroll en la landing page.
+
+17.3. CAPA DE SERVICIOS API (`services/`)
+- `api.js`: Cliente HTTP centralizado basado en la API nativa `fetch`. Lee automáticamente el token JWT desde `localStorage` e inyecta el encabezado `Authorization: Bearer <token>` en cada petición saliente.
+- `authService.js`, `destinoService.js`, `favoritoService.js`, `itinerarioService.js`, `usuarioService.js`.
+
+================================================================================
+                     18. INTEGRACIÓN FRONTEND - BACKEND
+================================================================================
+
+18.1. EVOLUCIÓN ARQUITECTÓNICA
+
++-------------------------------------------------------------------------+
+| FASE ANTERIOR (PROTOTIPO CON DATA MOCK)                                 |
+|                                                                         |
+|  [Componente React] ---> fetch('/src/data/destinos.json')               |
+|                                 |                                       |
+|                                 v                                       |
+|                  [Archivo Estático JSON en Disco]                       |
++-------------------------------------------------------------------------+
+
++-------------------------------------------------------------------------+
+| FASE ACTUAL (ARQUITECTURA DE PRODUCCIÓN FULL STACK REST)                |
+|                                                                         |
+|  [Componente React] ---> services/api.js (fetch con Bearer JWT)         |
+|                                 |                                       |
+|                                 v HTTP GET /api/destinos/activos        |
+|                  [Spring Boot RestController]                           |
+|                                 |                                       |
+|                                 v JPA / Hibernate                       |
+|                   [Base de Datos PostgreSQL]                            |
++-------------------------------------------------------------------------+
+
+18.2. FRAGMENTO DE CÓDIGO DE TRANSMISIÓN HTTP EN CLIENTE (`services/api.js`)
+
+```javascript
+const BASE_URL = 'http://localhost:8080/api'
+
+function getHeaders() {
+  const token = localStorage.getItem('voyageai-token')
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` }),
+  }
+}
+
+export async function get(path, params = {}) {
+  const url = new URL(`${BASE_URL}${path}`)
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null) url.searchParams.append(k, v)
+  })
+  const res = await fetch(url.toString(), { headers: getHeaders() })
+  return handleResponse(res)
+}
+```
+
+================================================================================
+                19. SISTEMA DE SEGURIDAD Y CONTROL DE ACCESOS
+================================================================================
+
+19.1. CONTROL DE ACCESOS EN SPRING SECURITY (`SecurityConfig.java`)
+
+```java
+.authorizeHttpRequests(auth -> auth
+    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/auth/**").permitAll()
+    .requestMatchers(HttpMethod.GET, "/api/destinos/activos", "/api/destinos/buscar").permitAll()
+    .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
+    .requestMatchers(HttpMethod.POST, "/api/itinerarios/completo", "/api/favoritos/**").authenticated()
+    .requestMatchers(HttpMethod.DELETE, "/api/favoritos/**").authenticated()
+    .requestMatchers(HttpMethod.PATCH, "/api/itinerarios/*/estado", "/api/usuarios/me/plan").authenticated()
+    .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+    .anyRequest().authenticated()
+)
+```
+
+================================================================================
+                       20. FLUJOS DETALLADOS DE NEGOCIO
+================================================================================
+
+20.1. FLUJO DE AUTENTICACIÓN (LOGIN)
+1. El usuario ingresa su correo y contraseña en `Login.jsx`.
+2. El cliente ejecuta `authService.login(correo, password)` enviando un `POST /api/auth/login`.
+3. `AuthController.java` autentica al usuario mediante `AuthenticationManager`.
+4. `JwtUtil.java` genera un token JWT firmado.
+5. El servidor responde con HTTP 200 OK y el cuerpo JSON conteniendo el token, datos del usuario y su rol.
+6. `AuthContext.jsx` guarda el token en `localStorage` con la clave `'voyageai-token'` y actualiza el estado React.
+7. El usuario es redirigido automáticamente a `/dashboard`.
+
+20.2. FLUJO DE REGISTRO Y ELIMINACIÓN LÓGICA
+- Registro: Se envía `POST /api/auth/registro`, `UsuarioService` encripta la clave con BCrypt y guarda el usuario en PostgreSQL.
+- Eliminación Lógica: El administrador presiona "Eliminar" en `AdminPanel.jsx`, el backend ejecuta `DestinoService.eliminar(id)` actualizando `activo = false` en PostgreSQL.
+
+================================================================================
+                        21. PLAN DE PRUEBAS Y VALIDACIÓN
+================================================================================
+
+1. Prueba de Autenticación JWT: Validar que peticiones sin encabezado Bearer a `/api/favoritos` retornen HTTP 401 Unauthorized.
+2. Prueba de Roles: Validar que un usuario con rol `ROLE_USUARIO` al intentar un `POST /api/destinos` reciba HTTP 403 Forbidden.
+3. Prueba de Eliminación Lógica: Desactivar un destino desde Admin Panel y verificar mediante consulta SQL que el registro permanece en PostgreSQL con `activo = false`.
+4. Compilación del Backend: Ejecución exitosa de `./mvnw compile -DskipTests`.
+5. Empaquetado del Frontend: Ejecución exitosa de `npm run build`.
+
+================================================================================
+                    22. EVIDENCIAS E INSTRUCCIONES DE CAPTURAS
+================================================================================
+
+[FIGURA 1. Proyecto frontend trabajado previamente
+
+Cómo obtener esta figura:
+1. Abrir la terminal y navegar a la carpeta 'voyageai'.
+2. Ejecutar 'npm run dev'.
+3. Abrir la URL http://localhost:5173 en el navegador Chrome en pantalla completa (1920x1080).
+4. Navegar a la página principal de inicio.
+5. Verificar que sea visible la landing page con el carrusel de destinos.
+6. Tomar captura completa de la ventana del navegador incluyendo la barra de direcciones.
+7. Guardar el archivo como 'Figura_1_Frontend_Inicial.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 2. Backend Spring Boot ejecutándose
+
+Cómo obtener esta figura:
+1. Abrir la terminal en la carpeta 'backend'.
+2. Ejecutar el comando './mvnw spring-boot:run'.
+3. Esperar a que la consola muestre el mensaje 'Started BackendApplication in X seconds'.
+4. Capturar la ventana de la terminal donde se aprecie claramente el banner de Spring Boot y el puerto 8080.
+5. Guardar el archivo como 'Figura_2_Backend_Running.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 3. Swagger mostrando endpoints
+
+Cómo obtener esta figura:
+1. Abrir el navegador e ingresar a 'http://localhost:8080/swagger-ui.html'.
+2. Verificar que se despliegue la interfaz de Swagger UI de VoyageAI.
+3. Desplegar los tags de 'Auth', 'Destinos', 'Favoritos' e 'Itinerarios'.
+4. Tomar captura de pantalla asegurando que se vean los métodos HTTP (GET, POST, PATCH, DELETE).
+5. Guardar el archivo como 'Figura_3_Swagger_UI.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 4. PostgreSQL mostrando tablas
+
+Cómo obtener esta figura:
+1. Abrir pgAdmin 4 o DBeaver y conectarse a la base de datos PostgreSQL local.
+2. Expandir el esquema 'public' y mostrar la lista de tablas (usuarios, destinos, favoritos, itinerarios, etc.).
+3. Ejecutar la consulta 'SELECT * FROM destinos LIMIT 5;'.
+4. Capturar la pantalla completa del cliente SQL con el panel de resultados de la consulta.
+5. Guardar el archivo como 'Figura_4_PostgreSQL_Tables.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 5. Pantalla Login
+
+Cómo obtener esta figura:
+1. En el frontend, navegar a 'http://localhost:5173/login'.
+2. Ingresar el correo 'admin@voyageai.com' y la clave 'admin123'.
+3. Capturar la pantalla justo antes de presionar el botón de inicio de sesión.
+4. Guardar el archivo como 'Figura_5_Pantalla_Login.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 6. Inicio de sesión exitoso
+
+Cómo obtener esta figura:
+1. Presionar el botón 'Iniciar Sesión'.
+2. Verificar la redirección automática hacia la vista '/dashboard'.
+3. Abrir las Herramientas de Desarrollador (F12) en la pestaña 'Application' -> 'Local Storage'.
+4. Resaltar la clave 'voyageai-token' con el token JWT guardado.
+5. Capturar la pantalla completa.
+6. Guardar el archivo como 'Figura_6_Login_Exitoso_JWT.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 7. Ruta protegida bloqueada
+
+Cómo obtener esta figura:
+1. Cerrar sesión en el frontend.
+2. Intentar escribir directamente en la barra de direcciones: 'http://localhost:5173/dashboard'.
+3. Comprobar que el AuthGuard intercepta la navegación y redirige automáticamente hacia '/login'.
+4. Capturar la pantalla de redirección con la URL mostrando la protección.
+5. Guardar el archivo como 'Figura_7_Ruta_Protegida_Bloqueada.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 8. Dashboard
+
+Cómo obtener esta figura:
+1. Iniciar sesión como usuario autenticado.
+2. Visualizar la pantalla principal '/dashboard'.
+3. Verificar que se muestren las tarjetas de estadísticas (Mis itinerarios, Completados, Activos, Borradores).
+4. Capturar la pantalla completa.
+5. Guardar el archivo como 'Figura_8_Dashboard_Usuario.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 9. Listado paginado
+
+Cómo obtener esta figura:
+1. Navegar a la sección de 'Destinos' (/destinos).
+2. Desplazarse hasta la parte inferior de la lista.
+3. Verificar que aparezca el control de paginación 'Pagination.jsx' mostrando los botones de navegación entre páginas.
+4. Capturar la sección inferior de la pantalla.
+5. Guardar el archivo como 'Figura_9_Listado_Paginado.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 10. Formulario registro
+
+Cómo obtener esta figura:
+1. Navegar a la ruta 'http://localhost:5173/registro'.
+2. Diligenciar los campos de Nombre, Correo Electrónico y Contraseña.
+3. Capturar el formulario lleno antes de enviar.
+4. Guardar el archivo como 'Figura_10_Formulario_Registro.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 11. Registro almacenado en PostgreSQL
+
+Cómo obtener esta figura:
+1. En pgAdmin o DBeaver, ejecutar: 'SELECT id, nombre, correo, rol, activo FROM usuarios ORDER BY id DESC LIMIT 1;'.
+2. Verificar que aparezca la fila con el usuario registrado recientemente.
+3. Capturar la pantalla del cliente SQL.
+4. Guardar el archivo como 'Figura_11_Registro_Almacenado_DB.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 12. Formulario edición / Modal de detalle
+
+Cómo obtener esta figura:
+1. En el Dashboard, presionar el botón 'Detalle' en uno de los itinerarios.
+2. Verificar la apertura del modal 'ItinerarioDetalleModal.jsx' mostrando los botones de cambio de estado y el cronograma.
+3. Capturar el modal desplegado sobre el Dashboard.
+4. Guardar el archivo como 'Figura_12_Modal_Detalle_Itinerario.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 13. Registro actualizado
+
+Cómo obtener esta figura:
+1. Cambiar el estado del itinerario de 'Borrador' a 'Activo' en el modal o selector inline.
+2. Comprobar que el badge de estado cambie su color a púrpura/azul de forma inmediata.
+3. Capturar la fila del itinerario con el nuevo estado reflejado.
+4. Guardar el archivo como 'Figura_13_Registro_Actualizado.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 14. Eliminación lógica
+
+Cómo obtener esta figura:
+1. Iniciar sesión como administrador e ingresar a '/admin'.
+2. Presionar el botón 'Desactivar' o 'Eliminar' sobre un destino del catálogo.
+3. Verificar que el estado visual del destino pase a inactivo o desaparezca del listado público.
+4. Capturar la vista de administración.
+5. Guardar el archivo como 'Figura_14_Eliminacion_Logica_Admin.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 15. Consulta SQL mostrando activo=false
+
+Cómo obtener esta figura:
+1. En el cliente PostgreSQL, ejecutar: 'SELECT id, nombre, activo FROM destinos WHERE activo = false;'.
+2. Mostrar la fila del destino desactivado conservando su clave primaria e historial.
+3. Capturar el resultado SQL.
+4. Guardar el archivo como 'Figura_15_SQL_Activo_False.png'.]
+
+-------------------------------------------------------
+
+[FIGURA 16. Repositorio GitHub
+
+Cómo obtener esta figura:
+1. Abrir el navegador e ingresar al repositorio de GitHub del proyecto.
+2. Asegurar que se vean las carpetas 'backend' y 'voyageai', el archivo 'README.md' y el historial de commits.
+3. Capturar la pantalla completa del repositorio.
+4. Guardar el archivo como 'Figura_16_Repositorio_GitHub.png'.]
+
+================================================================================
+                    23. FIGURAS OBLIGATORIAS Y ADICIONALES
+================================================================================
+
+Las 16 figuras principales detalladas en la sección anterior, junto con las capturas adicionales de la vista de Favoritos (`/favoritos`), constituyen la evidencia visual completa requerida para la auditoría y evaluación del proyecto.
+
+================================================================================
+             24. DIAGRAMAS TÉCNICOS Y GUÍAS DE CONSTRUCCIÓN
+================================================================================
+
+[DIAGRAMA 1. ARQUITECTURA GENERAL DEL SISTEMA]
+Software Recomendado: Draw.io / Lucidchart.
+Cajas y Elementos:
+- Caja 1 (Azul): Client Browser (React 25 SPA).
+- Caja 2 (Verde): API Gateway / Security Filter (JwtAuthenticationFilter).
+- Caja 3 (Naranja): REST Controllers (Spring Boot).
+- Caja 4 (Amarillo): Service Layer (Lógica de Negocio).
+- Caja 5 (Gris): Data Repositories (Spring Data JPA).
+- Caja 6 (Púrpura): Relational DB (PostgreSQL 16).
+Flechas: Conexiones unidireccionales de arriba hacia abajo indicando peticiones HTTP JSON e invocaciones a métodos Java.
+
+[DIAGRAMA 2. DIAGRAMA ENTIDAD RELACIÓN (DER)]
+Software Recomendado: dbdiagram.io / pgAdmin ERD Tool.
+Entidades:
+- usuarios (1) ---- (N) itinerarios
+- usuarios (1) ---- (N) resenas
+- usuarios (N) <--- (M) ---> destinos (vía tabla intermedia favoritos)
+- destinos (1) ---- (N) itinerarios
+- itinerarios (1) ---- (N) itinerario_actividades
+
+================================================================================
+                      25. PREGUNTAS CLAVE DEL INFORME
+================================================================================
+
+25.1. EVOLUCIÓN DEL PROYECTO
+El proyecto evolucionó de un prototipo SPA estático sustentado en archivos JSON locales a una arquitectura de producción distribuida Full Stack. Se reemplazaron las lecturas locales por servicios HTTP asíncronos en React conectándolos a una API REST en Spring Boot 3 con persistencia transaccional en PostgreSQL.
+
+25.2. FLUJO LOGIN
+El flujo de login opera sin estado (stateless) mediante JWT. El cliente envía credenciales codificadas en JSON a `/api/auth/login`. Spring Security las autentica mediante `BCryptPasswordEncoder` y retorna un token criptográfico. El cliente almacena este token en `localStorage` y lo adjunta en cada petición mediante el encabezado `Authorization: Bearer <token>`.
+
+25.3. CRUD COMPLETO
+Las operaciones CRUD están completamente implementadas. Creación de itinerarios completos en una sola transacción (`@Transactional`), lectura paginada mediante `Pageable`, actualización parcial del estado del itinerario (`PATCH`) y eliminación lógica de destinos (`activo = false`).
+
+25.4. SEGURIDAD
+Se aplican defensas en profundidad: cifrado de claves con BCrypt, filtrado JWT stateless mediante `JwtAuthenticationFilter`, restricción de endpoints por rol (`hasRole('ADMIN')`) en Spring Security y componentes de envoltura `AuthGuard` en el frontend.
+
+25.5. PROBLEMAS ENCONTRADOS Y SOLUCIONES
+- Problema de CORS: Bloqueo de peticiones desde el origen del cliente frontend hacia el backend. Solución: Configuración explícita de `CorsConfigurationSource` en `SecurityConfig.java`.
+- Solapamiento en renderizado de desplegables: Reemplazo del selector nativo `<select>` por componentes de menú flotante personalizados con soporte completo para tema oscuro.
+
+================================================================================
+                          26. CONCLUSIONES TÉCNICAS
+================================================================================
+
+1. La implementación de la arquitectura desacoplada Full Stack basada en Spring Boot 3 y React 25 garantiza la escalabilidad y mantenibilidad del sistema VoyageAI, separando claramente las responsabilidades de presentación y de negocio.
+2. La adopción de autenticación stateless mediante JWT en combinación con Spring Security 6 y BCrypt proporciona un esquema sólido de seguridad conforme a estándares internacionales.
+3. El uso de la estrategia de eliminación lógica (Soft Delete) en PostgreSQL asegura la integridad referencial histórica del sistema, impidiendo la pérdida en cascada de datos valiosos de itinerarios y reservas.
+4. El patrón de paginación con buffer (`useBufferedPagination`) desarrollado en el frontend optimiza drásticamente la experiencia del usuario, eliminando tiempos de latencia durante la navegación.
+
+================================================================================
+                           27. RECOMENDACIONES
+================================================================================
+
+1. Implementar almacenamiento en caché distribuido mediante Redis en el backend para acelerar las consultas de lectura en el catálogo de destinos con alta concurrencia.
+2. Configurar un pipeline de Integración y Despliegue Continuo (CI/CD) utilizando GitHub Actions para automatizar las pruebas unitarias y el despliegue del WAR en servidores de producción.
+3. Incorporar soporte para HTTPS mediante certificados SSL/TLS en entornos de despliegue real para cifrar el tráfico de red de extremo a extremo.
+
+================================================================================
+                        28. BIBLIOGRAFÍA (APA 7)
+================================================================================
+
+- MDN Web Docs. (2026). *Cross-Origin Resource Sharing (CORS)*. Mozilla Developer Network. https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+- OpenAPI Initiative. (2026). *OpenAPI Specification v3.1.0*. https://spec.openapis.org/oas/v3.1.0
+- Oracle Corporation. (2026). *Java Platform, Standard Edition Documentation (Release 21)*. https://docs.oracle.com/en/java/javase/21/
+- PostgreSQL Global Development Group. (2026). *PostgreSQL 16.0 Documentation*. https://www.postgresql.org/docs/16/index.html
+- React Documentation. (2026). *React 25 Documentation and Hooks Reference*. Meta Open Source. https://react.dev/
+- Spring Foundation. (2026). *Spring Boot Reference Documentation (v3.4.5)*. Broadcom Inc. https://docs.spring.io/spring-boot/docs/current/reference/html/
+- Spring Security. (2026). *Spring Security Reference Manual*. Broadcom Inc. https://docs.spring.io/spring-security/reference/
+
+================================================================================
+                            29. ANEXOS TÉCNICOS
+================================================================================
+
+29.1. ÁRBOL ESTRUCTURAL RESUMIDO DEL PROYECTO
+
+```
+ProyectoP1ATW/
+├── backend/
+│   ├── src/main/java/com/voyageai/backend/
+│   │   ├── config/ (SecurityConfig, AdminInitializer, SwaggerConfig)
+│   │   ├── controller/ (AuthController, DestinoController, FavoritoController, ItinerarioController, etc.)
+│   │   ├── dto/ (LoginRequest, ItinerarioCompletoRequest, MensajeResponse, etc.)
+│   │   ├── entity/ (Usuario, Destino, Favorito, FavoritoId, Itinerario, ItinerarioActividad, etc.)
+│   │   ├── exception/ (GlobalExceptionHandler, ResourceNotFoundException, BusinessException)
+│   │   ├── repository/ (UsuarioRepository, DestinoRepository, FavoritoRepository, ItinerarioRepository, etc.)
+│   │   ├── security/ (JwtAuthenticationFilter, JwtUtil, UserDetailsServiceImpl)
+│   │   └── service/ (UsuarioService, DestinoService, FavoritoService, ItinerarioService, OllamaService)
+│   ├── src/main/resources/ (application.properties)
+│   └── pom.xml
+└── voyageai/
+    ├── src/
+    │   ├── components/ (AuthGuard, GuestGuard, StepGuard, ItinerarioDetalleModal, Pagination, Navbar, etc.)
+    │   ├── context/ (AuthContext, ThemeContext, FlowContext)
+    │   ├── data/ (usuarios.json, destinos.json, planes.json - Datos mock históricos)
+    │   ├── hooks/ (useBufferedPagination.js, useScrollReveal.js, etc.)
+    │   ├── pages/ (Dashboard.jsx, Destinos.jsx, Favoritos.jsx, AdminPanel.jsx, Login.jsx, Registro.jsx)
+    │   ├── services/ (api.js, authService.js, destinoService.js, favoritoService.js, itinerarioService.js)
+    │   ├── App.jsx
+    │   ├── main.jsx
+    │   └── index.css
+    ├── package.json
+    └── vite.config.js
+```
+
+================================================================================
+FIN DEL INFORME TÉCNICO COMPLETO - VOYAGEAI (INFORME_PROYECTO.TXT)
+================================================================================

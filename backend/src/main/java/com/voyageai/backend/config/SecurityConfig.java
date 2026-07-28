@@ -68,7 +68,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me/plan").authenticated()
                 // El asterisco matchea el {id} del itinerario — la protección de que
                 // solo el dueño (o un admin) pueda generarlo vive en ItinerarioService.
-                .requestMatchers(HttpMethod.POST,  "/api/itinerarios/*/resumen-ia").authenticated()
+                .requestMatchers(HttpMethod.POST,   "/api/itinerarios/*/resumen-ia").authenticated()
+                .requestMatchers(HttpMethod.POST,   "/api/favoritos/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/favoritos/**").authenticated()
+                // El dueño del itinerario (o un admin) puede cambiar su propio estado —
+                // la verificación de propiedad vive en ItinerarioService.actualizarEstado.
+                .requestMatchers(HttpMethod.PATCH,  "/api/itinerarios/*/estado").authenticated()
 
                 // ── Escritura solo ADMIN (todo lo demás) ───────────
                 .requestMatchers(HttpMethod.POST,   "/api/**").hasRole("ADMIN")
